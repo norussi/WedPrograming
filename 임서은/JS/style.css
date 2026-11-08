@@ -1,0 +1,195 @@
+:root {
+  color-scheme: dark;
+  --ink: #f6f3ed;
+  --muted: #b9b7b1;
+  --gold: #f5c64e;
+  --green: #7fe0a1;
+  --panel: rgba(18, 19, 19, .91);
+  --line: rgba(255,255,255,.18);
+  font-family: Inter, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; overflow: hidden; background: #131718; color: var(--ink); }
+button { font: inherit; color: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
+.game { width: 100vw; height: 100vh; height: 100dvh; padding: 0; }
+.room { position: relative; isolation: isolate; overflow: hidden; width: 100%; height: 100%; background: #131718; }
+/* 배경 사진은 stage에 깔고, 화면을 꽉 채우도록(cover) 크기를 계산합니다. 버튼은 stage 안의 % 좌표라 사진과 항상 같이 움직입니다. */
+.stage { position: absolute; left: 50%; top: 50%; width: max(100vw, calc(100vh * 2213 / 1652)); aspect-ratio: 2213 / 1652; transform: translate(-50%, -50%);
+  background: url("./clubroom.png") center / 100% 100% no-repeat, radial-gradient(ellipse at 50% 30%, #8c7964 0%, #4c4138 46%, #252a2b 100%); }
+.stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #10131355, transparent 22%, transparent 78%, #10131370); pointer-events: none; }
+.hud {
+  position: absolute; z-index: 5; left: 0; right: 0; top: 0;
+  min-height: 82px; display: grid; grid-template-columns: 1.15fr 1.5fr 1fr .9fr; align-items: center;
+  padding: 12px 2.4%; gap: 18px; border: 0; border-bottom: 1px solid #ffffff2d; border-radius: 0;
+  background: rgba(24,24,23,.91); box-shadow: 0 10px 30px #0005; backdrop-filter: blur(16px);
+}
+.brand { display: flex; align-items: center; gap: 11px; font-size: clamp(15px, 1.5vw, 23px); font-weight: 700; white-space: nowrap; }
+.js-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 8px; background: #f2ce40; color: #1d251d; font-weight: 900; font-size: 17px; }
+.hud-progress { border-left: 1px solid var(--line); border-right: 1px solid var(--line); padding: 0 20px; }
+.hud-label { display: flex; gap: 10px; align-items: baseline; font-size: 15px; color: var(--muted); }
+.hud-label strong { color: var(--gold); font-size: 20px; }
+.progress-track { height: 9px; margin: 7px 0 4px; background: #ffffff20; border-radius: 8px; overflow: hidden; }
+.progress-track span { display: block; width: 0; height: 100%; background: linear-gradient(90deg,#ffc84d,#89e29b); border-radius: inherit; transition: width .3s ease; }
+.hud-progress small { color: #aaa8a3; font-size: 11px; }
+.hud-timer { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; column-gap: 12px; justify-content: center; }
+.hud-timer > span { color: var(--muted); font-size: 14px; }
+.hud-timer strong { font-size: 24px; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.hud-timer button { grid-column: 2; padding: 1px 0; border: 0; background: none; color: #c9c6c0; font-size: 12px; text-align: left; }
+.checklist-toggle { justify-self: end; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #ffffff0c; white-space: nowrap; font-size: 14px; }
+.checklist { position: absolute; z-index: 7; top: 96px; right: 2.4%; width: min(330px, 90%); padding: 20px; border: 1px solid #ffffff2b; border-radius: 16px; background: rgba(22,24,24,.96); box-shadow: 0 16px 40px #0007; }
+.checklist h2 { margin: 0 0 14px; font-size: 17px; }
+.checklist ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.checklist li { display: flex; gap: 10px; color: #d8d5cf; font-size: 13px; }
+.checklist li::before { content: "□"; color: #d2c9b0; }
+.checklist li.done::before { content: "✓"; color: var(--green); font-weight: 800; }
+.room-title { position: absolute; top: 22%; left: 5%; text-shadow: 0 2px 12px #0009; }
+.room-title span { color: #f1d37e; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+.room-title h1 { margin: 7px 0; font-size: clamp(25px, 3vw, 44px); }
+.room-title p { margin: 0; color: #e5e0d6; font-size: clamp(12px, 1.15vw, 16px); }
+.hotspot {
+  position: absolute; z-index: 2; translate: -50% -50%; display: flex; align-items: center; gap: 10px;
+  padding: 9px 13px; border: 1px solid #ffffff9c; border-radius: 13px;
+  background: rgba(17,21,22,.78); box-shadow: 0 5px 18px #0005; backdrop-filter: blur(8px);
+  text-align: left; transition: transform .18s, background .18s, border-color .18s;
+}
+.hotspot:hover, .hotspot:focus-visible { transform: translateY(-3px); background: rgba(31,56,54,.95); border-color: var(--green); outline: none; }
+.hotspot-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; background: #ffffff1b; color: #f5cf57; font-size: 20px; }
+.hotspot span:last-child { display: grid; gap: 2px; font-size: 13px; font-weight: 700; }
+.hotspot small { color: #d1cdc4; font-size: 10px; font-weight: 400; }
+.computer-hotspot { left: 24%; top: 61%; }  /* 가운데 Dell 모니터 */
+.board-hotspot { left: 64%; top: 41%; }     /* 칠판 */
+.book-hotspot { left: 32%; top: 31%; }      /* 책장 */
+.room-instruction { position: absolute; left: 4%; bottom: 4%; padding: 10px 14px; border-radius: 9px; background: #151817aa; color: #eee9df; font-size: 12px; }
+
+/* 창 안의 브라우저 미리보기와 코드 편집기 */
+.modal-backdrop, .ending-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 2vh 2vw; background: #000a; backdrop-filter: blur(7px); }
+.computer-window { width: min(1440px, 96vw); height: min(900px, 94vh); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #ffffff48; border-radius: 15px; background: #1b1c1d; box-shadow: 0 25px 90px #000b; }
+.window-bar { flex: 0 0 48px; display: grid; grid-template-columns: 95px 1fr 95px; align-items: center; gap: 12px; padding: 0 12px; background: #282827; border-bottom: 1px solid #ffffff18; }
+.window-dots { display: flex; gap: 8px; padding-left: 6px; }
+.window-dots i { width: 12px; height: 12px; border-radius: 50%; background: #ff6861; }
+.window-dots i:nth-child(2) { background: #ffc247; } .window-dots i:nth-child(3) { background: #4fc56e; }
+.fake-address { justify-self: center; width: min(600px, 82%); padding: 6px 15px; border-radius: 7px; background: #3a3a39; color: #ddd; font-size: 12px; text-align: center; }
+.icon-button { border: 0; background: transparent; color: #d7d7d7; font-size: 28px; line-height: 1; }
+.window-content { min-height: 0; flex: 1; display: grid; grid-template-rows: auto auto minmax(150px,1fr) minmax(180px,.8fr); gap: 9px; padding: 12px; }
+.mission-tabs { display: flex; gap: 8px; overflow-x: auto; }
+.mission-tab { padding: 7px 12px; border: 1px solid #43474a; border-radius: 7px; background: #292c2e; color: #ccc; font-size: 12px; }
+.mission-tab.active { border-color: #8ecaa0; color: #a5efb7; background: #1c3328; }
+.mission-tab.done::after { content: " ✓"; color: var(--green); }
+.task-instruction { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 8px 12px; border: 1px solid #ffffff18; border-radius: 8px; background: #242627; }
+.eyebrow { color: #96d6a5; font-size: 10px; letter-spacing: .1em; }
+.task-instruction h2 { margin: 3px 0 0; font-size: 17px; }
+.task-instruction p { margin: 0; max-width: 58%; color: #c9c8c4; font-size: 12px; }
+.web-preview { min-height: 0; display: flex; flex-direction: column; overflow: auto; border: 1px solid #777; background: #f5f5f3; color: #222; }
+.site-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 25px; padding: 12px 18px; background: #eceeed; border-bottom: 1px solid #ccc; }
+.site-header strong { color: #323c4c; font-size: 17px; }
+.site-header span { color: #73777c; font-size: 11px; }
+.site-content { padding: 12px 16px 16px; }
+.site-section { display: flex; align-items: baseline; gap: 16px; }
+.site-section h3 { margin: 2px 0 11px; font-size: 15px; }
+.site-section p { margin: 0; color: #767676; font-size: 11px; }
+.image-grid { display: grid; grid-template-columns: repeat(var(--cols, 4),1fr); gap: 10px; }
+.broken-card { min-width: 0; min-height: 100px; border: 1px solid #c8c8c8; background: #f0f0ed; display: grid; place-items: center; color: #8d8d87; font-size: 11px; text-align: center; }
+.broken-card .broken-icon { font-size: 26px; color: #a5a5a0; }
+.broken-card.restored { border-color: #6bb983; background: #e9f6ec; color: #34744a; }
+.info-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 10px; }
+.info-slot { padding: 10px; border: 1px dashed #b6b6b1; background: #fafaf8; color: #868681; font-size: 11px; }
+.info-slot.restored-info { border-style: solid; border-color: #6bb983; background: #e9f6ec; color: #34744a; }
+.devtools { min-height: 0; display: grid; grid-template-columns: .9fr 1.1fr; gap: 1px; overflow: hidden; border: 1px solid #444; border-radius: 7px; background: #3d4143; }
+.console-pane, .editor-pane { min-width: 0; display: flex; flex-direction: column; background: #17191a; }
+.pane-title { min-height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-bottom: 1px solid #343638; color: #ddd; font-size: 11px; }
+.error-count { color: #e88b82; }
+.console-pane pre { flex: 1; overflow: auto; margin: 0; padding: 12px; color: #e48f88; font: 11px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
+#codeEditor { flex: 1; min-height: 90px; width: 100%; resize: none; border: 0; outline: none; padding: 12px; background: #101213; color: #c7e6cf; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.editor-actions { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; color: #aaa; font-size: 10px; }
+.editor-actions button, .primary-button { border: 0; border-radius: 7px; padding: 8px 14px; background: #39835b; color: white; font-weight: 700; }
+.hint-window, .ending-window { width: min(440px, 92vw); padding: 22px; border: 1px solid #ffffff3a; border-radius: 14px; background: #202222; box-shadow: 0 20px 60px #0009; }
+.hint-header { display: flex; align-items: center; justify-content: space-between; }
+.hint-header h2 { margin: 0; font-size: 19px; }
+.hint-window p { min-height: 50px; color: #dedbd5; font-size: 14px; line-height: 1.6; }
+.hint-window .primary-button { display: block; margin-left: auto; }
+.ending-window { text-align: center; }
+.ending-mark { display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: #264d37; color: #94edaf; font-size: 29px; }
+.timeout-mark { background: #542b2b; color: #ff9b8e; }
+.ending-window h2 { margin: 14px 0 7px; }
+.ending-window p { color: #c4c2bc; font-size: 14px; }
+.ending-window .primary-button { margin-top: 10px; }
+@media (max-width: 780px) {
+  .hud { grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 3%; }
+  .brand { font-size: 14px; } .js-mark { width: 30px; height: 30px; }
+  .hud-progress { border: 0; padding: 0; }
+  .hud-timer { justify-content: start; }
+  .checklist-toggle { justify-self: start; }
+  .window-content { grid-template-rows: auto auto minmax(150px,1fr) minmax(210px,1fr); }
+  .task-instruction { display: block; } .task-instruction p { max-width: none; margin-top: 6px; }
+  .devtools { grid-template-columns: 1fr; grid-template-rows: .6fr 1fr; }
+}
+@media (max-width: 480px) {
+  .image-grid { grid-template-columns: repeat(2,1fr); }
+  .info-grid { grid-template-columns: 1fr; }
+  .computer-window { width: 100%; height: 96vh; }
+  .modal-backdrop { padding: 2vh 2vw; }
+  .window-bar { grid-template-columns: 62px 1fr 62px; gap: 5px; padding: 0 6px; }
+  .fake-address { width: 100%; font-size: 10px; }
+  .window-content { padding: 7px; gap: 6px; }
+}
+
+/* ---- 추가 스타일 ---- */
+#questionPrompt { white-space: pre-line; }
+.info-slot { white-space: pre-line; }
+.console-pane pre.ok { color: #8be0a4; }
+.editor-actions button:disabled { opacity: .5; cursor: wait; }
+.broken-card .photo-emoji { font-size: 34px; display: block; margin-bottom: 4px; }
+.broken-card.photo-1 { background: linear-gradient(135deg,#ffd9a8,#ff9a8a); color: #5a2a1a; border-color: #e9a57f; }
+.broken-card.photo-2 { background: linear-gradient(135deg,#b9e0ff,#8aa6ff); color: #1d2e6b; border-color: #8fa8e8; }
+.broken-card.photo-3 { background: linear-gradient(135deg,#d8c4ff,#ff9fd0); color: #4b2063; border-color: #c59be0; }
+.broken-card.photo-4 { background: linear-gradient(135deg,#c4f0c8,#8fd9b6); color: #1d5a3a; border-color: #7fcf9f; }
+.hint-window.whiteboard { width: min(680px, 94vw); background: #f7f8f6; color: #1c2a4a; border: 6px solid #b9bcb8; }
+.hint-window.whiteboard .icon-button { color: #333; }
+.hint-window.whiteboard h2 { font-family: "Nanum Pen Script", "Segoe Print", "Comic Sans MS", cursive; font-size: 30px; color: #c0392b; }
+.hint-window.whiteboard p { white-space: pre-line; font-family: "Nanum Pen Script", "Segoe Print", "Comic Sans MS", cursive; font-size: 27px; line-height: 1.5; color: #1d3a8a; min-height: 120px; }
+.book-window { width: min(780px, 94vw); max-height: 92vh; overflow: auto; padding: 22px; border: 1px solid #ffffff3a; border-radius: 14px; background: #2a2118; box-shadow: 0 20px 60px #0009; }
+.book-guide { margin: 10px 0 14px; color: #d9cfbf; font-size: 13px; }
+.bookshelf { display: flex; align-items: flex-end; gap: 6px; min-height: 210px; padding: 18px 18px 0; overflow-x: auto; border-bottom: 14px solid #8a6a3f; border-radius: 8px 8px 0 0; background: #3a2c1d; }
+.book-spine { flex: 0 0 auto; width: 46px; padding: 10px 0; border: 0; border-radius: 4px 4px 0 0; writing-mode: vertical-rl; color: #fff; font-size: 13px; font-weight: 700; text-shadow: 0 1px 2px #0009; box-shadow: inset -4px 0 0 #0003; transition: transform .15s; }
+.book-spine:hover, .book-spine:focus-visible { transform: translateY(-8px); outline: none; }
+.book-spine.open { transform: translateY(-14px); box-shadow: 0 0 0 2px var(--gold); }
+.book-reader { margin-top: 16px; padding: 16px 18px; border-radius: 10px; background: #f3ecd9; color: #2b2418; min-height: 130px; }
+.book-reader h3 { margin: 0 0 8px; font-size: 16px; }
+.book-reader p { margin: 0; font-size: 14px; line-height: 1.7; white-space: pre-line; }
+@media (max-aspect-ratio: 1/1) { .stage { width: 100vw; } }
+
+/* 입문자용: 긴 문제 설명, 칠판 메모, 사진 카드 */
+.task-instruction { flex-direction: column; align-items: stretch; gap: 6px; max-height: 190px; overflow: auto; }
+.task-instruction p { max-width: none; font-size: 12.5px; line-height: 1.6; }
+.hint-window.whiteboard { width: min(820px, 94vw); max-height: 92vh; overflow: auto; }
+.board-notes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 14px 0; }
+.board-note { display: grid; gap: 4px; padding: 10px 12px; border: 2px dashed #9fb0d8; border-radius: 8px; font-family: "Nanum Pen Script", "Segoe Print", "Comic Sans MS", cursive; color: #1d3a8a; }
+.board-note strong { color: #c0392b; font-size: 24px; font-weight: 400; }
+.board-note span { white-space: pre-line; font-size: 20px; line-height: 1.4; }
+@media (max-width: 640px) { .board-notes { grid-template-columns: 1fr; } }
+.broken-card.has-photo { position: relative; overflow: hidden; aspect-ratio: 4 / 3; padding: 0; }
+.broken-card.has-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.broken-card.has-photo .photo-caption { position: absolute; left: 0; right: 0; bottom: 0; padding: 4px 6px; background: #000a; color: #fff; font-size: 11px; }
+.broken-card.has-photo .photo-emoji { margin-top: 18px; }
+
+/* 코드 편집기 줄 번호 */
+.editor-body { flex: 1; min-height: 90px; display: flex; overflow: hidden; background: #101213; }
+.line-numbers { flex: 0 0 auto; min-width: 42px; margin: 0; padding: 12px 8px 40px; overflow: hidden; text-align: right; color: #5f676c; background: #0c0e0f; border-right: 1px solid #25282a; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; user-select: none; }
+.line-numbers span { display: block; }
+.line-numbers span.err { margin: 0 -8px; padding: 0 8px; color: #ff6b61; font-weight: 700; background: #3a1b1b; }
+.editor-body #codeEditor { flex: 1; min-width: 0; min-height: 0; width: auto; white-space: pre; overflow: auto; tab-size: 2; }
+/* 컴퓨터 창 닫기: 왼쪽 빨간 버튼 */
+.window-dots { align-items: center; }
+.dot-close { position: relative; width: 12px; height: 12px; padding: 0; border: 0; border-radius: 50%; background: #ff6861; cursor: pointer; }
+.dot-close::after { content: "×"; position: absolute; inset: 0; display: grid; place-items: center; color: #7a1410; font-size: 11px; font-weight: 700; line-height: 1; opacity: 0; }
+.dot-close:hover::after, .dot-close:focus-visible::after { opacity: 1; }
+.dot-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* 코드 편집기·콘솔 스크롤 */
+.console-pane, .editor-pane { min-height: 0; }
+.editor-body { min-height: 0; }
+.editor-body #codeEditor { height: 100%; overflow: auto; }
+.console-pane pre { min-height: 0; overflow: auto; }
+.window-content { overflow-y: auto; }
+.devtools { min-height: 200px; }
