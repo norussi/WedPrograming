@@ -1,0 +1,69 @@
+<!doctype html>
+<!--
+팀 통합 안내
+1. begin(): 시연 ID 생성 대신 POST /plays에서 발급한 playId를 사용.
+2. enterPractice(): POST /plays/:id/start 성공 후 같은 사이트·탭에서 HTML 방으로 이동.
+3. 엔딩 진입: index.html?scene=ending을 열고, sessionStorage의 playId로 서버 결과 조회.
+   서버가 확인한 {cleared:true, elapsedSeconds:754, hintCount:2}를 BreakGame.complete()에 전달.
+4. showRank(): 시연용 records()를 GET /rankings 응답으로 교체하고 안내 문구 변경.
+   실기록의 완료 판정과 저장은 서버에서 처리. demo 버튼은 통합 시 제거.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Break; — F학점 탈출</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="bar"><div class="bar-inner"><div class="brand"><span class="logo" aria-hidden="true">⌘</span> <span id="brand-text">웹프로그래밍 실습</span></div><nav aria-label="주 메뉴"><button type="button" data-home>홈</button><button type="button" data-open="help-dialog">게임 방법</button><button type="button" data-rank>랭킹</button></nav><small id="identity">웹프로그래밍 특별 실습</small></div></header>
+<div class="campus-banner" aria-hidden="true"><div>2026학년도 · 특별 실습 프로그램</div></div>
+<main class="wrap">
+<section id="home" aria-labelledby="home-title">
+  <div class="hero">
+    
+    <div class="hero-body"><p class="eyebrow">학점 복구 프로젝트</p><h1 id="home-title" tabindex="-1"><span class="red">F</span> 받은 성적<br>되살리기</h1><p class="muted">세 개의 실습을 완료하고 A+를 되찾으세요.</p>
+      <form id="start-form" novalidate><label for="nickname">닉네임</label><input id="nickname" autocomplete="nickname" placeholder="예: 종강희망" aria-describedby="nickname-help nickname-error" required><p id="nickname-help" class="help">앞뒤 공백을 제외하고 2~10자로 입력하세요.</p><p id="nickname-error" class="error" role="alert" hidden></p><button class="btn primary wide" type="submit">START →</button></form>
+      <div class="actions"><button class="btn" data-open="help-dialog">게임 방법</button><button class="btn" data-rank>랭킹</button></div><div class="chips subject-chips"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span></div>
+    </div>
+  </div>
+</section>
+<section id="prologue" aria-labelledby="prologue-title" hidden>
+  <p class="eyebrow">학사 정보 / 성적 조회</p><h1 id="prologue-title" tabindex="-1">2026학년도 성적 조회</h1>
+  <div class="progress"><span>성적 복구 진행률</span><progress value="0" max="100" aria-label="성적 복구 진행률"></progress><span>0%</span></div>
+  <div class="split">
+    <article class="panel"><div class="section-label"><h2>수강 과목 성적</h2><span class="tiny-tag">2026</span></div><table class="grade-table"><thead><tr><th>교과목명</th><th>성적</th><th>비고</th></tr></thead><tbody><tr><td>웹프로그래밍</td><td>F</td><td>실습 미션 미완료</td></tr></tbody></table><p class="notice">실습 기록 확인이 필요합니다.</p><p class="room-label">특별 실습 <span>모든 실습을 완료해 주세요.</span></p><div class="room-badges"><span class="chip">HTML<small>대기 중</small></span><span class="chip">CSS<small>대기 중</small></span><span class="chip">JavaScript<small>대기 중</small></span></div></article>
+    <article class="panel"><div class="chat-head"><span class="avatar" aria-hidden="true">교</span><div><h2>웹프로그래밍 담당 교수</h2><p>성적 정정 상담</p></div></div>
+      <div id="messages" class="messages" role="log" aria-label="교수님과의 대화"></div><p class="chat-tip">글자가 나오는 중 클릭하면 문장이 완성됩니다.</p>
+      <div class="actions end"><button id="prev" class="btn">이전</button><button id="next" class="btn primary">다음 →</button></div>
+    </article>
+  </div>
+</section>
+<section id="guide" class="panel guide" aria-labelledby="guide-title" hidden>
+  <p class="eyebrow">SPECIAL PRACTICE</p><h1 id="guide-title" tabindex="-1">특별 실습 안내</h1><p class="muted">세 실습을 순서대로 통과하면 최종 성적이 A+로 복구됩니다. 실습 소요 시간은 HTML 실습실에 입장할 때부터 측정합니다.</p>
+  <ol class="stages"><li><b>01</b> HTML 실습실 <span>통과 시 33%</span></li><li><b>02</b> CSS 디자인실 <span>통과 시 67%</span></li><li><b>03</b> JavaScript 동아리방 <span>통과 시 100%</span></li></ol>
+  <div class="actions end"><button id="back-chat" class="btn">대화 다시 보기</button><button id="enter" class="btn primary">HTML 실습실 입장 →</button></div>
+</section>
+<section id="demo" class="panel guide" aria-labelledby="demo-title" hidden>
+  <p class="eyebrow">FRONTEND PREVIEW</p><h1 id="demo-title" tabindex="-1">실습실 연결 대기</h1>
+  <p class="demo-note">이 화면은 팀원의 실습실을 연결하기 전, 엔딩 흐름을 확인하기 위한 시연용 화면입니다.</p>
+  <div class="actions"><button id="demo-clear" class="btn primary">예시 결과로 엔딩 보기</button><button class="btn" data-home>메인으로</button></div>
+</section>
+<section id="ending" class="panel result" aria-labelledby="ending-title" hidden>
+  <div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">FINAL RESULT</p><h1 id="ending-title" tabindex="-1">성적 정정 완료</h1><p class="muted" id="result-name"></p>
+  <div class="grade" aria-label="성적 F에서 A 플러스로 변경">F <b>→</b> <span>A+</span></div><h2>학점 복구 성공!</h2>
+  <div class="progress"><span>성적 복구 진행률</span><progress value="100" max="100" aria-label="성적 복구 진행률"></progress><span>100%</span></div>
+  <ul class="stages"><li>HTML 실습실 <span class="pass">PASS</span></li><li>CSS 디자인실 <span class="pass">PASS</span></li><li>JavaScript 동아리방 <span class="pass">PASS</span></li></ul>
+  <div class="metrics"><div class="metric"><span>소요 시간</span><strong id="result-time"></strong></div><div class="metric"><span>힌트 사용</span><strong id="result-hints"></strong></div></div>
+  <p class="muted" id="result-note"></p><div class="professor-note"><span class="avatar" aria-hidden="true">교</span><div><small>교수님 메시지</small><p>수고했어요. 다음 학기에도 수강할 거죠? ^^</p></div></div>
+  <div class="actions"><button class="btn primary" data-rank>랭킹 보기</button><button class="btn" id="retry">다시 도전</button><button class="btn" data-home>메인으로</button></div><p class="end-caption">THE END</p>
+</section>
+</main>
+<dialog id="help-dialog" aria-labelledby="help-title"><h2 id="help-title">게임 방법</h2><ol class="muted"><li>닉네임을 입력하고 교수님의 대화를 확인합니다.</li><li>HTML → CSS → JavaScript 순서로 실습을 통과합니다.</li><li>막히면 조교 SOS에서 힌트를 확인합니다.</li><li>세 실습을 통과하면 엔딩에서 기록을 확인합니다.</li></ol><form method="dialog" class="actions end"><button class="btn">닫기</button></form></dialog>
+<dialog id="rank-dialog" aria-labelledby="rank-title"><h2 id="rank-title">랭킹</h2><p class="muted">현재 브라우저의 시연용 기록입니다. 시간이 짧은 순으로, 시간이 같으면 힌트를 적게 쓴 순으로 표시합니다.</p>
+  <p id="empty-rank" class="muted">아직 등록된 기록이 없습니다.</p><div class="table-wrap" id="rank-wrap" hidden><table><thead><tr><th scope="col">순위</th><th scope="col">닉네임</th><th scope="col">시간</th><th scope="col">힌트</th></tr></thead><tbody id="rank-body"></tbody></table></div>
+  <form method="dialog" class="actions end" style="margin-top:14px"><button class="btn">닫기</button></form>
+</dialog>
+<script src="js/game.js" defer></script>
+</body>
+</html>
