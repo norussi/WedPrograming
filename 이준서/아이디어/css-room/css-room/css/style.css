@@ -1,0 +1,30 @@
+[hidden]{display:none!important}
+body{margin:0;background:#0d1117;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif}
+#scene{position:relative;width:100%;max-width:1670px;margin:0 auto;aspect-ratio:1670/941;container-type:inline-size}
+#scene>img{position:absolute;inset:0;width:100%;height:100%}
+#hud{position:absolute;top:0;left:0;right:0;height:7.4%;display:flex;align-items:center;gap:2cqw;padding:0 1.7cqw;background:#1b2b3e;color:#fff;font-size:1.5cqw}
+.logo{background:#2f7fd1;border-radius:.5cqw;padding:.4cqw 1.2cqw;margin-right:-1cqw}
+#hud i{width:1px;height:2cqw;background:#5b6b7d}
+.bar{width:12cqw;height:.7cqw;background:#5b6b7d;border-radius:1cqw;overflow:hidden}
+#fill{display:block;height:100%;width:0;background:#8fd14f;transition:width .4s}
+#hud.danger #timer{color:#ff7a6b}
+#cl-btn{margin-left:auto;background:none;border:0;color:#fff;font:inherit;cursor:pointer}
+#checklist{position:absolute;top:7.4%;right:1cqw;margin:0;padding:1cqw 2cqw;list-style:none;background:#1b2b3e;color:#9fb0c3;font-size:1.4cqw;line-height:1.8;border-radius:0 0 1cqw 1cqw}
+#checklist li.ok{color:#8fd14f;text-decoration:line-through}
+.hot{position:absolute;background:transparent;border:0;cursor:pointer}
+.hot:hover{background:rgba(255,255,255,.14)}
+.hot.solved{outline:.35cqw solid #2fb457;outline-offset:-.1cqw;background:rgba(47,180,87,.22);cursor:default}
+#h-board{left:29.4%;top:20.8%;width:45.2%;height:23.7%}
+#h-monitor{left:16.3%;top:30.1%;width:10.5%;height:11.2%}
+#h-locker{left:78.4%;top:19%;width:16.7%;height:36.2%}
+#h-desk{left:42%;top:54.8%;width:23.7%;height:7.7%}
+#modal{border:0;border-radius:14px;padding:24px 28px;width:min(440px,92vw);font-family:inherit}
+#modal::backdrop{background:rgba(0,0,0,.6)}
+#modal h2{margin:0 0 4px}
+#q-text{color:#555;margin:0 0 14px}
+#form{display:flex;gap:6px;margin-top:14px}
+#ans{flex:1;padding:8px;font-size:15px;min-width:0}
+#hint{background:#fff6d6;padding:8px 10px;border-radius:6px;font-size:14px}
+#msg{color:#d33;min-height:1.2em;margin:8px 0 0}
+#end{position:fixed;inset:0;z-index:20;display:grid;place-content:center;gap:12px;text-align:center;background:rgba(0,0,0,.88);color:#fff}
+#e-go{color:#8fd14f;font-size:20px}
