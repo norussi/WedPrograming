@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>JavaScript 동아리방</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
 </head>
@@ -13,7 +13,7 @@
   <main class="game">
     <section class="room" aria-label="JavaScript 동아리방">
       <header class="hud">
-        <div class="brand"><span class="js-mark">JS</span><span>JavaScript 동아리방</span></div>
+        <div class="brand"><span class="js-mark" aria-hidden="true">JS</span><span class="brand-name">JavaScript 동아리방</span></div>
         <div class="hud-progress">
           <div class="hud-label"><span>진행률</span><strong id="progressPercent">0%</strong></div>
           <div class="progress-track" role="progressbar" aria-label="미션 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -28,6 +28,17 @@
         <button class="checklist-toggle" id="checklistToggle" type="button" aria-expanded="false">
           체크리스트 <span id="checklistCount">(0/4)</span> <span aria-hidden="true">⌄</span>
         </button>
+        <!-- 점 세 개 메뉴: 다시하기 / 메인 화면 / 배경음악 설정 -->
+        <div class="menu-wrap">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="메뉴 열기" aria-haspopup="true" aria-expanded="false">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+          <div class="menu-dropdown" id="menuDropdown" role="menu" hidden>
+            <button type="button" role="menuitem" id="menuRestart"><span aria-hidden="true">↻</span>다시하기</button>
+            <button type="button" role="menuitem" id="menuMain"><span aria-hidden="true">⌂</span>메인 화면</button>
+            <button type="button" role="menuitem" id="menuMusic"><span aria-hidden="true">♪</span>배경음악 설정</button>
+          </div>
+        </div>
       </header>
 
       <aside class="checklist" id="checklistPanel" hidden>
@@ -49,6 +60,13 @@
       </div>
 
       <div class="room-instruction">오브젝트를 클릭해 조사하기</div>
+
+      <!-- 타이머 일시정지 중에 보이는 안내 (정지 중에는 미션·힌트 이용 불가) -->
+      <div class="pause-notice" id="pauseNotice" role="status" hidden>
+        <strong>⏸ 일시정지 중</strong>
+        <p>타이머를 재개하면 미션을 풀고 힌트를 볼 수 있어요.</p>
+        <button class="primary-button" id="pauseResume" type="button">▶ 재개하기</button>
+      </div>
     </section>
   </main>
 
@@ -116,6 +134,19 @@
       <p class="book-guide">책등을 클릭하면 책을 펼쳐 볼 수 있습니다.</p>
       <div class="bookshelf" id="bookShelf"></div>
       <article class="book-reader"><h3 id="readerTitle"></h3><p id="readerText"></p></article>
+    </section>
+  </div>
+
+  <!-- 배경음악 설정 팝업: 켜기/끄기 + 볼륨만 조절 (음악 파일은 app.js의 BGM_SRC에서 지정) -->
+  <div class="modal-backdrop music-backdrop" id="musicModal" hidden>
+    <section class="hint-window music-window" role="dialog" aria-modal="true" aria-labelledby="musicTitle">
+      <header class="hint-header"><h2 id="musicTitle">배경음악 설정</h2><button class="icon-button" id="closeMusic" type="button" aria-label="닫기">×</button></header>
+      <div class="music-row">
+        <div class="music-row-text"><strong>배경음악</strong><small id="musicState">켜짐</small></div>
+        <button class="switch" id="musicSwitch" type="button" role="switch" aria-checked="true" aria-label="배경음악 켜기/끄기"><span class="switch-knob"></span></button>
+      </div>
+      <label class="music-volume"><span>볼륨 <b id="musicVolumeText">50%</b></span><input type="range" id="musicVolume" min="0" max="100" value="50"></label>
+      <p class="music-note" id="musicNote" hidden></p>
     </section>
   </div>
 

@@ -23,6 +23,24 @@ const PHOTOS = [
   { src: "image4.png", caption: "멘토멘티", emoji: "📚" }
 ];
 
+/* =====================================================================
+ * ★ 배경음악 파일 ★
+ *  - 사용할 음악 파일의 경로를 아래 BGM_SRC에 적으세요.   예) const BGM_SRC = "./bgm.mp3";
+ *  - 비워 두면("") 음악이 재생되지 않습니다.
+ *  - 웹페이지에서는 ⋮ 메뉴 → 배경음악 설정에서 켜기/끄기와 볼륨만 조절할 수 있습니다.
+ * ===================================================================== */
+const BGM_SRC = "";
+
+/* =====================================================================
+ * ★ 메인 화면 연동 ★
+ *  ⋮ 메뉴의 "메인 화면" 버튼을 누르면 아래 함수가 실행됩니다.
+ *  메인 화면과 연동하는 코드를 이 함수 안에 작성하세요.
+ *  예) window.location.href = "../main/index.html";
+ * ===================================================================== */
+function goToMainScreen() {
+  // TODO: 메인 화면 연동 코드
+}
+
 /* ---------- 칠판: 미션 순서와 상관없이 섞여 있는 메모 ---------- */
 const BOARD_NOTES = [
   { title: "🔀 인자의 순서", text: "function 이름(a, b, c) 로 만들었다면\n이름(1, 2, 3)  →  a=1, b=2, c=3\n넣은 순서대로 짝지어진다!\n순서가 바뀌면 값도 엉뚱한 자리로 들어간다" },
@@ -235,6 +253,95 @@ const bookModal = $("#bookModal");
 const editor = $("#codeEditor");
 const consoleOutput = $("#consoleOutput");
 const timerText = $("#timerText");
+const musicModal = $("#musicModal");
+const menuDropdown = $("#menuDropdown");
+
+/* ---------- 배경음악 (웹페이지에서는 켜기/끄기·볼륨만 조절) ---------- */
+const bgm = new Audio();
+bgm.loop = true;
+const music = { on: true, failed: false, unlockArmed: false };
+
+function readSetting(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value;
+  } catch (error) { return fallback; } // 저장소를 쓸 수 없는 환경이면 기본값
+}
+function saveSetting(key, value) {
+  try { localStorage.setItem(key, String(value)); } catch (error) { /* 무시 */ }
+}
+function setMusicVolume(percent, save) {
+  bgm.volume = percent / 100;
+  $("#musicVolume").value = String(percent);
+  $("#musicVolumeText").textContent = percent + "%";
+  if (save) saveSetting("jsClubBgmVolume", percent);
+}
+function updateMusicUI() {
+  const sw = $("#musicSwitch");
+  sw.setAttribute("aria-checked", String(music.on));
+  sw.classList.toggle("on", music.on);
+  $("#musicState").textContent = music.on ? "켜짐" : "꺼짐";
+  const note = $("#musicNote");
+  if (!BGM_SRC) { note.textContent = "배경음악 파일이 아직 지정되지 않았어요."; note.hidden = false; }
+  else if (music.failed) { note.textContent = "음악 파일을 불러오지 못했어요. 파일 경로를 확인해 주세요."; note.hidden = false; }
+  else note.hidden = true;
+}
+function tryPlayMusic() {
+  if (!BGM_SRC || !music.on) return;
+  const promise = bgm.play();
+  if (promise && promise.catch) promise.catch(armMusicUnlock);
+}
+// 브라우저가 자동재생을 막으면, 화면을 처음 클릭/키 입력할 때 한 번 더 재생을 시도합니다.
+function armMusicUnlock() {
+  if (music.unlockArmed) return;
+  music.unlockArmed = true;
+  const retry = () => {
+    document.removeEventListener("pointerdown", retry);
+    document.removeEventListener("keydown", retry);
+    music.unlockArmed = false;
+    tryPlayMusic();
+  };
+  document.addEventListener("pointerdown", retry);
+  document.addEventListener("keydown", retry);
+}
+function setMusicOn(on) {
+  music.on = on;
+  saveSetting("jsClubBgmOn", on ? "1" : "0");
+  if (on) tryPlayMusic(); else bgm.pause();
+  updateMusicUI();
+}
+function initMusic() {
+  const saved = Number(readSetting("jsClubBgmVolume", "50"));
+  setMusicVolume(saved >= 0 && saved <= 100 ? saved : 50, false);
+  music.on = readSetting("jsClubBgmOn", "1") !== "0";
+  if (BGM_SRC) bgm.src = BGM_SRC;
+  bgm.addEventListener("error", () => { if (BGM_SRC) { music.failed = true; updateMusicUI(); } });
+  updateMusicUI();
+  tryPlayMusic();
+}
+function openMusic() {
+  updateMusicUI();
+  musicModal.hidden = false;
+  $("#closeMusic").focus();
+}
+function closeMusic() { musicModal.hidden = true; }
+
+/* ---------- ⋮ 메뉴 ---------- */
+function openMenu() {
+  $("#checklistPanel").hidden = true;
+  $("#checklistToggle").setAttribute("aria-expanded", "false");
+  menuDropdown.hidden = false;
+  $("#menuToggle").setAttribute("aria-expanded", "true");
+}
+function closeMenu() {
+  menuDropdown.hidden = true;
+  $("#menuToggle").setAttribute("aria-expanded", "false");
+}
+function toggleMenu() { if (menuDropdown.hidden) openMenu(); else closeMenu(); }
+function restartFromMenu() {
+  closeMenu();
+  if (window.confirm("처음부터 다시 시작할까요?\n진행 상황과 작성한 코드가 모두 초기화됩니다.")) resetGame();
+}
 
 function init() {
   renderMissionTabs();
@@ -242,6 +349,7 @@ function init() {
   renderProgress();
   renderPreviewPlaceholders();
   renderMission(0);
+  initMusic();
   bindEvents();
   startTimer();
 }
@@ -265,17 +373,34 @@ function bindEvents() {
     }
   });
   $("#timerToggle").addEventListener("click", toggleTimer);
+  $("#pauseResume").addEventListener("click", toggleTimer);
   $("#checklistToggle").addEventListener("click", toggleChecklist);
   $("#endingClose").addEventListener("click", () => { $("#endingModal").hidden = true; });
   $("#retryButton").addEventListener("click", resetGame);
-  [computerModal, hintModal, bookModal].forEach((modal) => {
+
+  // ⋮ 메뉴
+  $("#menuToggle").addEventListener("click", toggleMenu);
+  $("#menuRestart").addEventListener("click", restartFromMenu);
+  $("#menuMain").addEventListener("click", () => { closeMenu(); goToMainScreen(); });
+  $("#menuMusic").addEventListener("click", () => { closeMenu(); openMusic(); });
+  document.addEventListener("click", (event) => {
+    if (!menuDropdown.hidden && !event.target.closest(".menu-wrap")) closeMenu();
+  });
+  // 배경음악 설정
+  $("#closeMusic").addEventListener("click", closeMusic);
+  $("#musicSwitch").addEventListener("click", () => setMusicOn(!music.on));
+  $("#musicVolume").addEventListener("input", (event) => setMusicVolume(Number(event.target.value), true));
+
+  [computerModal, hintModal, bookModal, musicModal].forEach((modal) => {
     modal.addEventListener("click", (event) => {
       if (event.target === modal) modal.hidden = true;
     });
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      if (!hintModal.hidden) closeHint();
+      if (!musicModal.hidden) closeMusic();
+      else if (!menuDropdown.hidden) closeMenu();
+      else if (!hintModal.hidden) closeHint();
       else if (!bookModal.hidden) closeBook();
       else if (!computerModal.hidden) closeComputer();
     }
@@ -283,6 +408,7 @@ function bindEvents() {
 }
 
 function openComputer() {
+  if (state.paused) return;
   computerModal.hidden = false;
   renderMission(state.currentMission);
   $("#closeComputer").focus();
@@ -291,6 +417,7 @@ function closeComputer() { computerModal.hidden = true; }
 
 /* 칠판: 미션 순서와 상관없이 섞여 있는 메모 */
 function showBoard() {
+  if (state.paused) return;
   $("#hintTitle").textContent = "JS Club 칠판";
   const notes = $("#hintText");
   notes.innerHTML = "";
@@ -311,6 +438,7 @@ function closeHint() { hintModal.hidden = true; }
 
 /* 책장: 여러 책 중 하나를 골라 읽어야 힌트를 찾을 수 있음 */
 function openBook() {
+  if (state.paused) return;
   renderBookshelf();
   bookModal.hidden = false;
   $("#closeBook").focus();
@@ -459,14 +587,24 @@ function updateTimerButton() {
   const button = $("#timerToggle");
   button.textContent = state.paused ? "▶ 재개" : "Ⅱ 정지";
   button.setAttribute("aria-label", state.paused ? "타이머 재개" : "타이머 일시정지");
+  applyPauseState();
+}
+// 타이머가 멈춰 있는 동안에는 미션(컴퓨터)·힌트(칠판, 책장)를 이용할 수 없습니다.
+function applyPauseState() {
+  ["#computerHotspot", "#boardHotspot", "#bookHotspot"].forEach((selector) => { $(selector).disabled = state.paused; });
+  $("#pauseNotice").hidden = !state.paused;
+  $(".room").classList.toggle("is-paused", state.paused);
+  if (state.paused) { closeComputer(); closeHint(); closeBook(); }
 }
 function toggleTimer() {
+  if (state.solved.every(Boolean)) return; // 모든 미션을 끝낸 뒤에는 타이머가 이미 멈춰 있음
   state.paused = !state.paused;
   updateTimerButton();
 }
 function toggleChecklist() {
   const panel = $("#checklistPanel");
   const willOpen = panel.hidden;
+  if (willOpen) closeMenu();
   panel.hidden = !willOpen;
   $("#checklistToggle").setAttribute("aria-expanded", String(willOpen));
 }
@@ -543,7 +681,7 @@ function formatError(err, code) {
 }
 
 async function runCurrentCode() {
-  if (state.running) return;
+  if (state.running || state.paused) return;
   const index = state.currentMission;
   const mission = missionData[index];
   const runButton = $("#runCode");
@@ -631,6 +769,7 @@ function restorePreviewItem(index, data) {
 
 function resetGame() {
   $("#endingModal").hidden = true;
+  closeMenu();
   state.solved = [false, false, false, false];
   state.currentMission = 0;
   state.secondsElapsed = 0;
