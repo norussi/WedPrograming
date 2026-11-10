@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML 실습실 · Break;</title>
+<link rel="stylesheet" href="css/html_room.css">
+</head>
+<body>
+
+<header class="hud">
+ <div class="hud-inner">
+  <div class="hud-l">
+    <div class="brand"><span class="logo" aria-hidden="true">⌘</span><span class="badge">HTML</span><span class="room-name">실습실</span></div>
+    <span class="sep"></span>
+    <span class="lbl">진행률</span><b id="pct">0%</b><span class="meter" role="progressbar" aria-label="HTML 실습실 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></span>
+    <span class="sep"></span>
+    <span class="lbl">타이머</span><span id="timer">00:00</span>
+    <span class="sep"></span>
+    <div class="check-wrap">
+      <button id="checkBtn" aria-expanded="false">체크리스트 (<span id="checkN">0</span>/4) ▾</button>
+      <div id="checkPanel" class="check-panel hidden"></div>
+    </div>
+  </div>
+  <div class="hud-r">
+    <span class="hints-pill">힌트 사용 <b id="hintN">0</b>회</span>
+    <span class="sep"></span>
+    <button id="bgmBtn">BGM 꺼짐</button>
+    <button id="pauseBtn">일시정지</button>
+    <button id="retryBtn">다시하기</button>
+    <button id="mainBtn">메인 화면으로</button>
+  </div>
+ </div>
+</header>
+
+<main class="stage">
+  <div class="scene" id="scene"></div>
+</main>
+
+<!-- 입장 안내 -->
+<div class="overlay hidden" id="introOv">
+  <div class="card">
+    <div class="eyebrow">STAGE 1 · HTML 실습실</div>
+    <h2>과제가 각 PC에 흩어져 있다</h2>
+    <p>접속자 <b id="introNick"></b>님, HTML 실습 과제가 이 방의 컴퓨터 네 대에 남아 있어요. <b>화면이 켜진 PC</b>를 클릭해 미션을 해결하고, 다음 실습실로 이동하세요.</p>
+    <p class="note">이 방의 미션은 브라우저 <b>개발자 도구(F12)</b>를 직접 사용합니다. 크롬·엣지 같은 PC 브라우저에서 플레이하세요. 막히면 각 미션 창의 <b>힌트</b> 버튼을 누르세요.</p>
+    <button class="btn primary block" id="enterBtn">실습실 입장 →</button>
+  </div>
+</div>
+
+<!-- 미션 창 -->
+<div class="overlay hidden" id="missionOv">
+  <div class="win" role="dialog" aria-modal="true" aria-labelledby="winUrl">
+    <div class="win-bar">
+      <div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <div class="win-url" id="winUrl"></div>
+      <button class="x" id="winClose" aria-label="닫기">×</button>
+    </div>
+    <div class="win-body" id="winBody"></div>
+    <div class="win-body" id="hintBox"></div>
+  </div>
+</div>
+
+
+<!-- 일시정지 -->
+<div class="overlay hidden" id="pauseOv">
+  <div class="card" style="text-align:center">
+    <div class="eyebrow">PAUSED</div>
+    <h2>일시정지</h2>
+    <p class="muted">타이머가 멈췄어요. 진행 상황은 자동 저장됩니다.</p>
+    <button class="btn primary block" id="resumeBtn">계속하기</button>
+  </div>
+</div>
+
+<!-- 스테이지 클리어 -->
+<div class="overlay hidden" id="clearOv">
+  <div class="card" style="text-align:center">
+    <div class="eyebrow">HTML 실습 통과</div>
+    <h2>HTML 실습실 클리어!</h2>
+    <div class="grade"><span class="f">HTML</span><span class="arr">→</span><span class="p">PASS</span></div>
+    <div class="stats">
+      <div>미션<b>4 / 4</b></div>
+      <div>누적 시간<b id="clearTime">00:00</b></div>
+      <div>힌트 사용<b id="clearHints">0회</b></div>
+    </div>
+    <div class="prof" style="text-align:left"><small>웹프로그래밍 담당 교수</small><p id="profMsg"></p></div>
+    <button class="btn primary block" id="nextBtn">CSS 디자인실로 이동 →</button>
+    <button class="linkbtn" id="replayBtn">이 방 처음부터 다시 하기</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/html_room.js"></script>
+</body>
+</html>

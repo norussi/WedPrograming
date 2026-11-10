@@ -1,0 +1,46 @@
+/* 이한솔 frontend/css/style.css 디자인 토큰과 맞춤 */
+:root{--navy:#203447;--ink:#203246;--muted:#647589;--teal:#237e80;--teal-d:#19686b;--red:#b64043;--line:#dfe6ec;--bg:#f0f3f7;font-family:system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg)}
+*{box-sizing:border-box}
+body{margin:0;min-width:280px;line-height:1.5;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer}button:disabled{opacity:.45;cursor:default}
+button:focus-visible{outline:3px solid #7cc5c8;outline-offset:3px}
+h1,h2,p{margin:0}
+.hud{background:#203447f5;color:#fff;position:sticky;top:0;z-index:5}
+.hud-inner{max-width:1100px;margin:auto;min-height:64px;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 20px}
+.hud-l,.hud-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;gap:9px;align-items:center;font-weight:750;letter-spacing:-.035em}
+.logo{font-size:24px;color:#d2e7ec;line-height:1}
+.badge{font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:99px;background:#eaf2fc;color:#3f6fa6}
+.badge.css{background:#e9f3f3;color:#24727a}
+.sep{width:1px;height:22px;background:#ffffff2b}
+.lbl{font-size:.75rem;color:#c4d3df}
+.hud b{font-variant-numeric:tabular-nums}
+.meter{display:inline-block;width:110px;height:8px;border-radius:99px;background:#ffffff26;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:#7cc5c8;border-radius:99px;transition:width .4s}
+.hud button{border:0;color:#dbe5ef;background:transparent;border-radius:5px;padding:8px 11px;font-size:.8rem}
+.hud button:hover{background:#ffffff16;color:#fff}
+.wrap{max-width:1100px;margin:auto;padding:26px 24px 36px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:18px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;min-width:0}
+.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.11em;color:var(--teal);margin-bottom:9px}
+h1{font-size:1.6rem;font-weight:800;letter-spacing:-.045em;margin-bottom:8px}
+h2{font-size:1rem;font-weight:750;margin-bottom:10px}
+.muted{color:var(--muted);font-size:.88rem;line-height:1.7}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.btn{min-height:42px;border:1px solid #c9d5df;border-radius:6px;padding:9px 17px;color:var(--ink);background:#fff;font-size:.87rem;font-weight:700}
+.btn:hover:not(:disabled){background:#eff5f7}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.primary:hover:not(:disabled){background:var(--teal-d)}
+.stages{list-style:none;padding:0;margin:16px 0 0}
+.stages li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.stages li span{margin-left:auto;font-size:.78rem;color:var(--muted)}
+.stages li.pass span{color:var(--teal);font-weight:700}
+.stages li.here{font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{width:42%;color:#56697b;font-weight:600;background:#f1f4f7}
+td{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.src{display:inline-block;font-size:.72rem;font-weight:700;border-radius:99px;padding:2px 9px;background:#eef3f6;color:#43576b}
+.src.url{background:#f8f2e6;color:#876c32}.src.storage{background:#e9f3f3;color:#24727a}
+pre{background:#17283a;color:#cbd5e1;border-radius:8px;padding:12px;font-size:.76rem;white-space:pre-wrap;word-break:break-all;margin:12px 0 0}
+.notice{margin-top:14px;padding:12px;background:#edf5f8;color:#355d73;border-radius:6px;font-size:.82rem}
+@media(max-width:760px){.wrap{grid-template-columns:1fr;padding:16px}.sep{display:none}.hud-inner{padding:10px 16px}.meter{width:70px}}
