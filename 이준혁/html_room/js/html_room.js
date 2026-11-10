@@ -1,140 +1,3 @@
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HTML 실습실 · Break;</title>
-<style>
-body{margin:0;font-family:sans-serif;background:#222;color:#eee}
-.hidden{display:none !important}
-.hud{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:8px 12px;background:#333}
-.hud-l,.hud-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.bar{display:inline-block;width:90px;height:6px;background:#555}
-.bar i{display:block;height:100%;width:0;background:#4ade80}
-.check-wrap{position:relative}
-.check-panel{position:absolute;top:100%;left:0;width:320px;background:#333;border:1px solid #555;padding:8px;z-index:50}
-.check-item{display:flex;gap:8px;padding:4px 0}
-.check-item.done .t{text-decoration:line-through}
-.scene{position:relative;width:min(100%,calc((100vh - 50px) * 1.3333));aspect-ratio:516/387;margin:0 auto;background:url("images.jfif") center/cover no-repeat}
-.pc{position:absolute;padding:0;background:#ef44441a;border:3px solid #ef4444;cursor:pointer}
-.pc:hover{background:#f5b84a44;border-color:#f5b84a}
-.pc.solved{border-color:#4ade80;background:#4ade8033}
-.pc.locked{border-color:#94a3b8;background:#0005}
-.tag{position:absolute;left:0;bottom:100%;background:#000a;color:#fff;font-size:12px;padding:0 4px}
-.overlay{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:100;padding:16px}
-.card,.win{max-width:520px;width:100%;max-height:90vh;overflow:auto;background:#fff;color:#222;padding:20px}
-.win{max-width:720px;background:#1b1f2a;color:#eee;padding:0}
-.win-bar{display:flex;justify-content:space-between;padding:8px 12px;background:#0a0e17}
-.win-body{padding:16px}
-.btn{padding:8px 14px;cursor:pointer}
-.btn.block{width:100%;margin-top:12px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.row.end{justify-content:flex-end}
-.code{background:#0b1020;color:#cbd5e1;padding:10px;white-space:pre-wrap;word-break:break-all}
-.inp{flex:1;padding:8px}
-.msg.bad{color:#f87171}.msg.good{color:#4ade80}.msg.info{color:#f5b84a}
-.opts{display:flex;gap:10px;margin:12px 0}
-.opts label{padding:10px 16px;border:1px solid #888;cursor:pointer}
-.slots{display:flex;gap:8px;margin:12px 0}
-.slot{padding:6px 10px;border:1px dashed #888}
-.slot.got{border-style:solid;color:#4ade80}
-.rules{padding-left:18px}
-.rules li.ok{color:#4ade80}
-.idcard-wrap{background:#fff;color:#222;padding:8px;max-width:440px;margin:12px 0}
-student{display:block}
-student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상태 " attr(status)}
-.stats{display:flex;gap:16px}
-.hint{background:#eee;color:#222;padding:8px;margin:6px 0}
-.muted{color:#888}
-.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:8px 14px;opacity:0;pointer-events:none;z-index:200}
-.toast.show{opacity:1}
-.shake{animation:shake .35s}
-@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-</style>
-</head>
-<body>
-
-<header class="hud">
-  <div class="hud-l">
-    <span class="badge">HTML</span><span class="room-name">실습실</span>
-    <span class="sep"></span>
-    <span class="lbl">진행률:</span><b id="pct">0%</b><span class="bar"><i id="barFill"></i></span>
-    <span class="sep"></span>
-    <span class="lbl">타이머</span><span id="timer">00:00</span>
-    <span class="sep"></span>
-    <div class="check-wrap">
-      <button id="checkBtn" aria-expanded="false">체크리스트 (<span id="checkN">0</span>/4) ▾</button>
-      <div id="checkPanel" class="check-panel hidden"></div>
-    </div>
-  </div>
-  <div class="hud-r">
-    <span>힌트 사용: <b id="hintN">0</b>회</span>
-    <button id="bgmBtn">BGM 꺼짐</button>
-    <button id="pauseBtn">일시정지</button>
-    <button id="retryBtn">다시하기</button>
-    <button id="mainBtn">메인 화면으로</button>
-  </div>
-</header>
-
-<main class="stage">
-  <div class="scene" id="scene"></div>
-</main>
-
-<!-- 입장 안내 -->
-<div class="overlay hidden" id="introOv">
-  <div class="card">
-    <div class="eyebrow">STAGE 1 · HTML 실습실</div>
-    <h2>과제가 각 PC에 흩어져 있다</h2>
-    <p>접속자 <b id="introNick"></b>님, HTML 실습 과제가 이 방의 컴퓨터 네 대에 남아 있어요. <b>화면이 켜진 PC</b>를 클릭해 미션을 해결하고, 다음 실습실로 이동하세요.</p>
-    <p class="note">이 방의 미션은 브라우저 <b>개발자 도구(F12)</b>를 직접 사용합니다. 크롬·엣지 같은 PC 브라우저에서 플레이하세요. 막히면 각 미션 창의 <b>힌트</b> 버튼을 누르세요.</p>
-    <button class="btn primary block" id="enterBtn">실습실 입장 →</button>
-  </div>
-</div>
-
-<!-- 미션 창 -->
-<div class="overlay hidden" id="missionOv">
-  <div class="win" role="dialog" aria-modal="true" aria-labelledby="winUrl">
-    <div class="win-bar">
-      <div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
-      <div class="win-url" id="winUrl"></div>
-      <button class="x" id="winClose" aria-label="닫기">×</button>
-    </div>
-    <div class="win-body" id="winBody"></div>
-    <div class="win-body" id="hintBox"></div>
-  </div>
-</div>
-
-
-<!-- 일시정지 -->
-<div class="overlay hidden" id="pauseOv">
-  <div class="card" style="text-align:center">
-    <div class="eyebrow">PAUSED</div>
-    <h2>일시정지</h2>
-    <p class="muted">타이머가 멈췄어요. 진행 상황은 자동 저장됩니다.</p>
-    <button class="btn primary block" id="resumeBtn">계속하기</button>
-  </div>
-</div>
-
-<!-- 스테이지 클리어 -->
-<div class="overlay hidden" id="clearOv">
-  <div class="card" style="text-align:center">
-    <div class="eyebrow">HTML 실습 통과</div>
-    <h2>HTML 실습실 클리어!</h2>
-    <div class="grade"><span class="f">HTML</span><span class="arr">→</span><span class="p">PASS</span></div>
-    <div class="stats">
-      <div>미션<b>4 / 4</b></div>
-      <div>누적 시간<b id="clearTime">00:00</b></div>
-      <div>힌트 사용<b id="clearHints">0회</b></div>
-    </div>
-    <div class="prof" style="text-align:left"><small>웹프로그래밍 담당 교수</small><p id="profMsg"></p></div>
-    <button class="btn primary block" id="nextBtn">CSS 디자인실로 이동 →</button>
-    <button class="linkbtn" id="replayBtn">이 방 처음부터 다시 하기</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
 (() => {
 'use strict';
 
@@ -142,7 +5,7 @@ student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상
 const CONFIG = {
   mainUrl: 'index.html',                  // 메인 화면 파일
   nextStageUrl: 'css_room.html',          // 클리어 후 이동할 CSS 디자인실 파일
-  bgmSrc: 'audio/bgm_html.mp3',           // 없으면 내장 신스 BGM 재생
+  bgmSrc: 'assets/audio/bgm_html.mp3',    // 없으면 내장 신스 BGM 재생
   defaultNickname: '웹프',
   pw: 'ZjEyX2lzX2tleQ==',                 // PC 03 비밀번호 (base64)
   keys: {                                  // 다른 방과 공유하는 localStorage 키
@@ -152,7 +15,7 @@ const CONFIG = {
     stage:    'break_stage_result',        // 방별 통과 기록
     html:     'break_html_progress'        // 이 방의 진행 상황
   },
-  // PC 클릭 영역 (images.jfif 기준 %; x,y = 왼쪽 위)
+  // PC 클릭 영역 (assets/images.jfif 기준 %; x,y = 왼쪽 위)
   photoHotspots: {
     1: { x: 3.7,  y: 65.6, w: 33.7, h: 24.3 },
     2: { x: 56.6, y: 65.6, w: 33.0, h: 25.0 },
@@ -197,7 +60,11 @@ if (qs.has('reset')) {
   [K.html, K.elapsed, K.hints, K.stage].forEach(LS.del);
   history.replaceState(null, '', location.pathname);
 }
-const NICK = (qs.get('nick') || (LS.raw(K.nickname) || '').replace(/^"(.*)"$/, '$1') || CONFIG.defaultNickname).trim().slice(0, 20);
+// 이한솔 메인(frontend/js/game.js)은 sessionStorage 'break.play'에 {nickname,...}을 저장함
+function mainNick() {
+  try { return (JSON.parse(sessionStorage.getItem('break.play')) || {}).nickname || ''; } catch { return ''; }
+}
+const NICK = (qs.get('nick') || mainNick() || (LS.raw(K.nickname) || '').replace(/^"(.*)"$/, '$1') || CONFIG.defaultNickname).trim().slice(0, 20);
 const PASSWORD = atob(CONFIG.pw);
 const ORDER = ['pc03', 'pc08', 'pc14', 'pc17'];
 
@@ -285,6 +152,7 @@ function renderHUD() {
   const n = solvedCount(), pct = Math.round(n / 4 * 100);
   $('#pct').textContent = pct + '%';
   $('#barFill').style.width = pct + '%';
+  $('.meter').setAttribute('aria-valuenow', String(pct));
   $('#checkN').textContent = n;
   $('#hintN').textContent = state.hints;
   $('#checkPanel').innerHTML = '<div class="cp-title">HTML 실습실 체크리스트</div>' + ORDER.map(id => {
@@ -676,6 +544,3 @@ else state.paused = false;
 // 팀원 디버깅용: 콘솔에서 HTMLRoom.state 확인 가능
 window.HTMLRoom = { state, config: CONFIG, reset: () => { location.search = '?reset=1'; } };
 })();
-</script>
-</body>
-</html>
