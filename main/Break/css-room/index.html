@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSS 디자인실</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+<main id="scene">
+  <img src="images/classroom.png" alt="숭실대학교 강의실">
+  <header id="hud">
+    <div class="brand"><span class="logo">CSS</span><span class="brand-name">디자인실</span></div>
+    <div class="hud-progress">
+      <div class="hud-label"><span>진행률</span><b id="pct">0%</b></div>
+      <span class="bar"><span id="fill"></span></span>
+    </div>
+    <div class="hud-timer"><span>누적 시간</span><b id="total" class="total">00:00</b></div>
+    <button id="cl-btn" type="button">체크리스트 (<span id="done">0</span>/4) ⌄</button>
+    <div class="menu-wrap">
+      <button class="menu-toggle" id="menu-btn" type="button" aria-label="메뉴 열기"><span class="dots3"><i></i><i></i><i></i></span></button>
+      <div class="menu-dropdown" id="menu" hidden>
+        <button type="button" id="m-retry"><span>↻</span>다시하기</button>
+        <button type="button" id="m-main"><span>⌂</span>메인 화면</button>
+      </div>
+    </div>
+  </header>
+  <aside id="checklist" hidden>
+    <h2>CSS 미션</h2>
+    <ul>
+      <li data-q="board">칠판 · 선택자</li>
+      <li data-q="monitor">모니터 · 너비</li>
+      <li data-q="locker">사물함 · hover</li>
+      <li data-q="desk">책상 · checked</li>
+    </ul>
+  </aside>
+  <button class="hot" id="h-board" data-q="board" aria-label="칠판"></button>
+  <button class="hot" id="h-monitor" data-q="monitor" aria-label="모니터"></button>
+  <button class="hot" id="h-locker" data-q="locker" aria-label="사물함"></button>
+  <button class="hot" id="h-desk" data-q="desk" aria-label="책상"></button>
+</main>
+
+<dialog id="modal">
+  <span class="eyebrow">CSS 미션</span>
+  <h2 id="q-title"></h2>
+  <p id="q-text"></p>
+  <div id="q-body"></div>
+  <form id="form">
+    <input id="ans" autocomplete="off" placeholder="정답 입력">
+    <button type="submit" class="primary-button">제출</button>
+    <button type="button" id="hint-btn" class="ghost-button">힌트</button>
+    <button type="button" id="close" class="ghost-button">닫기</button>
+  </form>
+  <p id="hint" hidden></p>
+  <p id="msg"></p>
+</dialog>
+
+<section id="end" hidden>
+  <div class="end-card">
+    <span class="end-mark" id="e-mark">✓</span>
+    <h1 id="e-title"></h1><p id="e-text"></p>
+    <a id="e-go" class="primary-button" href="../js-room/index.html" hidden>JavaScript 동아리방으로 이동 →</a>
+    <button id="e-retry" class="primary-button" hidden>다시 시작</button>
+  </div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
