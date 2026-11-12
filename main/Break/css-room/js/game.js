@@ -15,6 +15,7 @@ function prog() {
   $('#fill').style.width = p + '%';
   $('#done').textContent = solved.size;
 }
+function updateHintCount() { $('#hint-count').textContent = num(KEY.hints); }
 function openQ(id) {
   if (solved.has(id)) return;
   cur = id;
@@ -63,6 +64,7 @@ $('#hint-btn').addEventListener('click', () => {
   if (!$('#hint').hidden && !hintSeen.has(cur)) {   // [통합] 힌트 사용 횟수 누적
     hintSeen.add(cur);
     localStorage.setItem(KEY.hints, String(num(KEY.hints) + 1));
+    updateHintCount();
   }
 });
 /* [통합] ⋮ 메뉴 */
@@ -75,6 +77,7 @@ $('#cl-btn').addEventListener('click', () => { $('#checklist').hidden = !$('#che
 $('#e-retry').addEventListener('click', () => location.reload());
 
 prog();
+updateHintCount();
 $('#total').textContent = fmtMs(elapsed);
 tm = setInterval(() => {
   elapsed += 1000; $('#total').textContent = fmtMs(elapsed);   // [통합] 누적 시간 저장

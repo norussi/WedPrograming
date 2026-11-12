@@ -13,13 +13,12 @@ body{margin:0;min-height:100vh;background:#1c2530;color:var(--ink)}
 button{font:inherit;color:inherit;cursor:pointer}
 .hidden{display:none !important}
 /* 상단 바 */
-.hud{position:sticky;top:0;z-index:60;min-height:72px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;padding:10px 2.4%;background:var(--navy);color:#fff;border-bottom:1px solid #ffffff14;box-shadow:0 6px 20px #0003}
-.hud-l,.hud-r{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
-.hud-r{gap:12px}
+.hud{position:sticky;top:0;z-index:60;min-height:72px;display:grid;grid-template-columns:auto minmax(200px,1.6fr) auto auto auto auto;align-items:center;gap:28px;padding:10px 2.4%;background:var(--navy);color:#fff;border-bottom:1px solid #ffffff14;box-shadow:0 6px 20px #0003}
+.hud-l,.hud-r{display:contents}
 .brand{display:flex;align-items:center;gap:12px;white-space:nowrap}
-.badge{display:grid;place-items:center;height:42px;padding:0 10px;border-radius:10px;background:#e8734a;color:#fff;font-size:16px;font-weight:900}
+.badge{display:grid;place-items:center;height:42px;padding:0 10px;border-radius:10px;background:#f2ce40;color:#1d251d;font-size:16px;font-weight:900}
 .room-name{font-size:clamp(20px,2.3vw,30px);font-weight:800;letter-spacing:-.02em}
-.hud-progress{min-width:180px}
+.hud-progress{min-width:0}
 .hud-label{display:flex;gap:10px;align-items:baseline;font-size:13px;color:#c3cdd8}
 .hud-label b{color:var(--teal-light);font-size:18px}
 .bar{display:block;height:8px;margin-top:6px;background:#ffffff26;border-radius:8px;overflow:hidden}
@@ -29,7 +28,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 #timer{color:#fff;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:.04em}
 #pauseBtn{grid-column:2;padding:1px 0;border:0;background:none;color:#c3cdd8;font-size:12px;text-align:left}
 #pauseBtn:hover{color:#fff}
-.hint-count{color:#c3cdd8;font-size:13px}.hint-count b{color:#fff}
+.hint-count{color:#c3cdd8;font-size:13px;white-space:nowrap}.hint-count b{color:#fff;font-size:15px}
 #checkBtn,.menu-toggle{border:1px solid #ffffff3d;border-radius:10px;background:#ffffff12;color:#fff}
 #checkBtn{padding:10px 14px;font-size:14px;white-space:nowrap}
 #checkBtn:hover,.menu-toggle:hover,.menu-toggle[aria-expanded="true"]{background:#ffffff26;border-color:#ffffff66}
@@ -117,6 +116,7 @@ student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상
 .toast.show{opacity:1}
 .shake{animation:shake .35s}
 @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@media(max-width:780px){.hud{grid-template-columns:1fr auto;gap:10px 12px;padding:10px 3%}.brand{grid-column:1;grid-row:1}.menu-wrap{grid-column:2;grid-row:1}.hud-progress{grid-column:1/-1;grid-row:2}.hud-timer{grid-column:1;grid-row:3}.hint-count{grid-column:1;grid-row:4}#pauseBtn{grid-column:2}#checkBtn{grid-column:2;grid-row:3/5;justify-self:end}.check-panel{top:calc(100% + 12px)}}
 </style>
 </head>
 <body>

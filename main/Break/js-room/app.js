@@ -346,6 +346,7 @@ function restartFromMenu() {
 }
 
 function init() {
+  updateHintCount();
   renderMissionTabs();
   renderChecklist();
   renderProgress();
@@ -426,6 +427,7 @@ function closeComputer() { computerModal.hidden = true; }
 /* 칠판: 미션 순서와 상관없이 섞여 있는 메모 */
 function showBoard() {
   localStorage.setItem("break_hint_count", String((Number(localStorage.getItem("break_hint_count")) || 0) + 1)); // [통합] 힌트 누적
+  updateHintCount();
   if (state.paused) return;
   $("#hintTitle").textContent = "JS Club 칠판";
   const notes = $("#hintText");
@@ -448,12 +450,14 @@ function closeHint() { hintModal.hidden = true; }
 /* 책장: 여러 책 중 하나를 골라 읽어야 힌트를 찾을 수 있음 */
 function openBook() {
   localStorage.setItem("break_hint_count", String((Number(localStorage.getItem("break_hint_count")) || 0) + 1)); // [통합] 힌트 누적
+  updateHintCount();
   if (state.paused) return;
   renderBookshelf();
   bookModal.hidden = false;
   $("#closeBook").focus();
 }
 function closeBook() { bookModal.hidden = true; }
+function updateHintCount() { const counter = $("#hintCount"); if (counter) counter.textContent = Number(localStorage.getItem("break_hint_count")) || 0; }
 function renderBookshelf() {
   const shelf = $("#bookShelf");
   shelf.innerHTML = "";
