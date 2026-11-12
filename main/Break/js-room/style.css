@@ -117,10 +117,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .window-dots { display: flex; align-items: center; gap: 8px; padding-left: 6px; }
 .window-dots i { width: 12px; height: 12px; border-radius: 50%; background: #ff6861; }
 .window-dots i:nth-child(2) { background: #ffc247; } .window-dots i:nth-child(3) { background: #4fc56e; }
-.dot-close { position: relative; width: 12px; height: 12px; padding: 0; border: 0; border-radius: 50%; background: #ff6861; cursor: pointer; }
-.dot-close::after { content: "×"; position: absolute; inset: 0; display: grid; place-items: center; color: #7a1410; font-size: 11px; font-weight: 700; line-height: 1; opacity: 0; }
-.dot-close:hover::after, .dot-close:focus-visible::after { opacity: 1; }
-.dot-close:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.window-close { justify-self: end; display: grid; place-items: center; width: 34px; height: 34px; padding: 0 0 3px; border: 1px solid #d9a19e; border-radius: 9px; background: #fff; color: #a8322d; font-size: 25px; font-weight: 500; line-height: 1; }
+.window-close:hover, .window-close:focus-visible { border-color: #a8322d; background: #fff0ef; color: #81231f; outline: 2px solid #d98b86; outline-offset: 2px; }
 .fake-address { justify-self: center; width: min(600px, 82%); padding: 6px 15px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); font-size: 12px; text-align: center; }
 .window-content { min-height: 0; flex: 1; display: grid; grid-template-rows: auto auto minmax(150px, 1fr) minmax(180px, .8fr); gap: 10px; padding: 14px; overflow-y: auto; }
 .mission-tabs { display: flex; gap: 8px; overflow-x: auto; }
