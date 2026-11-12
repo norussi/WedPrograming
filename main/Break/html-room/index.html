@@ -13,24 +13,25 @@ body{margin:0;min-height:100vh;background:#1c2530;color:var(--ink)}
 button{font:inherit;color:inherit;cursor:pointer}
 .hidden{display:none !important}
 /* 상단 바 */
-.hud{position:sticky;top:0;z-index:60;min-height:72px;display:grid;grid-template-columns:auto minmax(200px,1.6fr) auto auto auto auto;align-items:center;gap:28px;padding:10px 2.4%;background:var(--navy);color:#fff;border-bottom:1px solid #ffffff14;box-shadow:0 6px 20px #0003}
+.hud{position:sticky;top:0;z-index:60;min-height:72px;display:grid;grid-template-columns:auto minmax(160px,1.6fr) auto auto auto auto;align-items:center;gap:28px;padding:10px 2.4%;background:var(--navy);color:#fff;border-bottom:1px solid #ffffff14;box-shadow:0 6px 20px #0003}
 .hud-l,.hud-r{display:contents}
 .brand{display:flex;align-items:center;gap:12px;white-space:nowrap}
-.badge{display:grid;place-items:center;height:42px;padding:0 10px;border-radius:10px;background:#f2ce40;color:#1d251d;font-size:16px;font-weight:900}
+.badge{display:grid;place-items:center;flex:0 0 auto;width:42px;height:42px;padding:0;border-radius:10px;background:#f2ce40;color:#1d251d;font-size:16px;font-weight:900}
 .room-name{font-size:clamp(20px,2.3vw,30px);font-weight:800;letter-spacing:-.02em}
 .hud-progress{min-width:0}
 .hud-label{display:flex;gap:10px;align-items:baseline;font-size:13px;color:#c3cdd8}
 .hud-label b{color:var(--teal-light);font-size:18px}
-.bar{display:block;height:8px;margin-top:6px;background:#ffffff26;border-radius:8px;overflow:hidden}
+.bar{display:block;height:8px;margin:6px 0 4px;background:#ffffff26;border-radius:8px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5aa7a3,#8ed6c4);border-radius:inherit;transition:width .3s}
-.hud-timer{display:grid;grid-template-columns:auto auto;column-gap:12px;align-items:center}
-.hud-timer .lbl{color:#c3cdd8;font-size:13px}
-#timer{color:#fff;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.hud-progress small{color:#a9b6c3;font-size:11px}
+.hud-timer{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;align-items:center;column-gap:12px;justify-content:center}
+.hud-timer .timer-icon{grid-column:1;grid-row:1;color:#fff;font-size:20px;line-height:1}
+#timer{grid-column:2;grid-row:1;color:#fff;font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.04em}
 #pauseBtn{grid-column:2;padding:1px 0;border:0;background:none;color:#c3cdd8;font-size:12px;text-align:left}
 #pauseBtn:hover{color:#fff}
 .hint-count{color:#c3cdd8;font-size:13px;white-space:nowrap}.hint-count b{color:#fff;font-size:15px}
 #checkBtn,.menu-toggle{border:1px solid #ffffff3d;border-radius:10px;background:#ffffff12;color:#fff}
-#checkBtn{padding:10px 14px;font-size:14px;white-space:nowrap}
+#checkBtn{justify-self:end;padding:10px 14px;font-size:14px;white-space:nowrap}
 #checkBtn:hover,.menu-toggle:hover,.menu-toggle[aria-expanded="true"]{background:#ffffff26;border-color:#ffffff66}
 .check-wrap,.menu-wrap{position:relative}
 .check-panel{position:absolute;top:calc(100% + 12px);right:0;width:min(330px,90vw);padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);box-shadow:0 14px 40px #1f2a3b4d;z-index:70}
@@ -42,7 +43,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .check-item .c{margin-top:4px;font-size:12px;color:var(--muted)}
 .clue-chip{display:inline-block;padding:1px 8px;border-radius:99px;background:var(--teal-soft);color:var(--teal-dark);font-weight:700}
 .menu-toggle{width:44px;height:44px;display:grid;place-items:center}
-.dots3{display:flex;flex-direction:column;gap:3px}.dots3 i{width:4px;height:4px;border-radius:50%;background:#fff}
+.menu-toggle{width:40px;height:40px}
+.dots3{display:flex;flex-direction:column;gap:4px}.dots3 i{width:4px;height:4px;border-radius:50%;background:#fff}
 .menu-dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:180px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 14px 40px #1f2a3b4d;z-index:70}
 .menu-dropdown button{display:flex;gap:10px;align-items:center;width:100%;padding:10px 12px;border:0;border-radius:8px;background:none;color:var(--ink);text-align:left;font-size:14px}
 .menu-dropdown button span{width:18px;color:var(--teal);text-align:center}
@@ -116,7 +118,7 @@ student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상
 .toast.show{opacity:1}
 .shake{animation:shake .35s}
 @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-@media(max-width:780px){.hud{grid-template-columns:1fr auto;gap:10px 12px;padding:10px 3%}.brand{grid-column:1;grid-row:1}.menu-wrap{grid-column:2;grid-row:1}.hud-progress{grid-column:1/-1;grid-row:2}.hud-timer{grid-column:1;grid-row:3}.hint-count{grid-column:1;grid-row:4}#pauseBtn{grid-column:2}#checkBtn{grid-column:2;grid-row:3/5;justify-self:end}.check-panel{top:calc(100% + 12px)}}
+@media(max-width:780px){.hud{grid-template-columns:1fr auto;gap:10px 12px;padding:10px 3%}.badge{width:34px;height:34px;font-size:16px}.room-name{font-size:20px}.brand{grid-column:1;grid-row:1}.menu-wrap{grid-column:2;grid-row:1}.hud-progress{grid-column:1/-1;grid-row:2}.hud-timer{grid-column:1;grid-row:3;justify-content:start}.hint-count{grid-column:1;grid-row:4}#pauseBtn{grid-column:2}#checkBtn{grid-column:2;grid-row:3/5;justify-self:end}.check-panel{top:calc(100% + 12px)}}
 </style>
 </head>
 <body>
@@ -126,10 +128,11 @@ student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상
     <div class="brand"><span class="badge">HTML</span><span class="room-name">실습실</span></div>
     <div class="hud-progress">
       <div class="hud-label"><span class="lbl">진행률</span><b id="pct">0%</b></div>
-      <span class="bar"><i id="barFill"></i></span>
+      <span class="bar progress-track"><i id="barFill"></i></span>
+      <small id="progressCount">0 / 4 미션 완료</small>
     </div>
     <div class="hud-timer">
-      <span class="lbl">경과 시간</span><span id="timer">00:00</span>
+      <span class="timer-icon" aria-hidden="true">⏱️</span><span id="timer">00:00</span>
       <button id="pauseBtn" type="button">Ⅱ 정지</button>
     </div>
   </div>
@@ -360,6 +363,7 @@ function renderHUD() {
   $('#pct').textContent = pct + '%';
   $('#barFill').style.width = pct + '%';
   $('#checkN').textContent = n;
+  $('#progressCount').textContent = n + ' / 4 미션 완료';
   $('#hintN').textContent = state.hints;
   $('#checkPanel').innerHTML = '<div class="cp-title">HTML 실습실 체크리스트</div>' + ORDER.map(id => {
     const m = MISSIONS[id], d = state.solved[id];

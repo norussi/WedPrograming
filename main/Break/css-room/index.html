@@ -10,12 +10,13 @@
 <main id="scene">
   <img src="images/classroom.png" alt="숭실대학교 강의실">
   <header id="hud">
-    <div class="brand"><span class="logo">CSS</span><span class="brand-name">디자인실</span></div>
+    <div class="brand"><span class="logo js-mark">CSS</span><span class="brand-name">디자인실</span></div>
     <div class="hud-progress">
       <div class="hud-label"><span>진행률</span><b id="pct">0%</b></div>
-      <span class="bar"><span id="fill"></span></span>
+      <span class="bar progress-track"><span id="fill"></span></span>
+      <small id="progress-count">0 / 4 미션 완료</small>
     </div>
-    <div class="hud-timer"><span>누적 시간</span><b id="total" class="total">00:00</b></div>
+    <div class="hud-timer"><span class="timer-icon" aria-hidden="true">⏱️</span><strong id="total" class="total">00:00</strong><button id="timer-pause" type="button" aria-label="타이머 일시정지">Ⅱ 정지</button></div>
     <span class="hint-count">힌트 사용 <b id="hint-count">0</b>회</span>
     <button id="cl-btn" type="button">체크리스트 (<span id="done">0</span>/4) ⌄</button>
     <div class="menu-wrap">

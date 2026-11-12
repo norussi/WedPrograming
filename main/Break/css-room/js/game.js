@@ -7,6 +7,7 @@ const KEY = { elapsed: 'break_elapsed_ms', hints: 'break_hint_count', stage: 'br
 const num = (k) => Number(localStorage.getItem(k)) || 0;
 let elapsed = num(KEY.elapsed);   // HTML 방에서 이어지는 누적 시간(ms)
 let hintSeen = new Set();         // 같은 문제 힌트는 1번만 카운트
+let timerPaused = false;
 function fmtMs(ms) { const t = Math.floor(ms / 1000); return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); }
 
 function prog() {
@@ -14,6 +15,7 @@ function prog() {
   $('#pct').textContent = p + '%';
   $('#fill').style.width = p + '%';
   $('#done').textContent = solved.size;
+  $('#progress-count').textContent = solved.size + ' / ' + ids.length + ' 미션 완료';
 }
 function updateHintCount() { $('#hint-count').textContent = num(KEY.hints); }
 function openQ(id) {
@@ -75,11 +77,17 @@ $('#m-main').addEventListener('click', () => { localStorage.setItem(KEY.elapsed,
 $('#close').addEventListener('click', () => $('#modal').close());
 $('#cl-btn').addEventListener('click', () => { $('#checklist').hidden = !$('#checklist').hidden; });
 $('#e-retry').addEventListener('click', () => location.reload());
+$('#timer-pause').addEventListener('click', (e) => {
+  timerPaused = !timerPaused;
+  e.currentTarget.textContent = timerPaused ? '▶ 재개' : 'Ⅱ 정지';
+  e.currentTarget.setAttribute('aria-label', timerPaused ? '타이머 재개' : '타이머 일시정지');
+});
 
 prog();
 updateHintCount();
 $('#total').textContent = fmtMs(elapsed);
 tm = setInterval(() => {
+  if (timerPaused) return;
   elapsed += 1000; $('#total').textContent = fmtMs(elapsed);   // [통합] 누적 시간 저장
   localStorage.setItem(KEY.elapsed, String(Math.round(elapsed)));
 }, 1000);
