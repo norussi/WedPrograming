@@ -1,0 +1,140 @@
+/* 이한솔 frontend/css/style.css 디자인 토큰과 맞춤 */
+:root{--navy:#2c3b4c;--ink:#203246;--muted:#647589;--teal:#407c7f;--teal-d:#34686b;--red:#b64043;--line:#dfe6ec;--paper:#fff;--bg:#f0f3f7;--code:#17283a;font-family:system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);font-synthesis:none}
+*{box-sizing:border-box}
+body{margin:0;min-width:280px;line-height:1.5;background:var(--bg);color:var(--ink)}
+button,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid #7cc5c8;outline-offset:3px}
+h2,h3,p{margin:0}
+.hidden{display:none!important}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.86em;background:#eef3f6;border:1px solid #e1e8ef;border-radius:4px;padding:0 4px}
+.muted{color:var(--muted);line-height:1.7;font-size:.82rem}
+.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.11em;color:var(--teal);margin-bottom:9px}
+
+/* [통합] 상단 바 스타일은 ../common/hud.css (세 방 공용) */
+.hud{position:sticky}
+
+/* 체크리스트 드롭다운 */
+.check-wrap{position:relative}
+.check-panel{z-index:70;position:absolute;top:calc(100% + 12px);right:0;width:min(330px,90vw);padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);box-shadow:0 14px 40px #1f2a3b4d}
+.cp-title{font-size:.72rem;font-weight:800;letter-spacing:.08em;color:var(--teal);margin-bottom:6px}
+.check-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.84rem}
+.check-item:last-child{border-bottom:0}
+.check-item .box{flex-shrink:0;width:20px;height:20px;border:1px solid #bccad7;border-radius:5px;display:grid;place-items:center;font-size:.75rem;color:#fff}
+.check-item.done .box{background:var(--teal);border-color:var(--teal)}
+.check-item.done .t{color:var(--muted);text-decoration:line-through}
+.check-item .c{font-size:.74rem;color:var(--muted);margin-top:3px}
+.clue-chip{display:inline-block;font-family:ui-monospace,Consolas,monospace;font-size:.74rem;background:#e9f3f3;color:#24727a;border-radius:99px;padding:1px 9px;margin-left:4px}
+
+/* ── 실습실 장면 ── */
+.stage{max-width:1240px;margin:auto;padding:22px 28px 30px}
+.scene{position:relative;width:min(100%,calc((100svh - 120px) * 1.3333));aspect-ratio:516/387;margin:0 auto;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 16px 55px #10243622;
+  background:url("../assets/images.jfif") center/cover no-repeat,linear-gradient(180deg,#d5dde3 0 52%,#b9a58c 52% 100%)}
+.pc{position:absolute;padding:0;background:#b640431a;border:3px solid var(--red);border-radius:6px;transition:background .15s,border-color .15s}
+.pc:hover{background:#237e8033;border-color:#7cc5c8}
+.pc.solved{border-color:var(--teal);background:#237e8040}
+.pc.locked{border-color:#94a3b8;background:#20344799;cursor:not-allowed}
+.tag{position:absolute;left:-3px;bottom:calc(100% + 3px);background:var(--navy);color:#fff;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.pc.solved .tag{background:var(--teal)}
+.scene.fx-clear{animation:glow 1s ease}
+@keyframes glow{50%{box-shadow:0 0 0 6px #7cc5c8,0 16px 55px #10243622}}
+
+/* ── 오버레이 / 카드 (이한솔 dialog·panel 톤) ── */
+.overlay{position:fixed;inset:0;background:#152b3d99;backdrop-filter:blur(4px);display:grid;place-items:center;z-index:100;padding:16px}
+.card,.win{width:100%;max-height:88svh;overflow:auto;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 25px 80px #12293840}
+.card{max-width:520px;padding:28px}
+.card h2{font-size:1.35rem;font-weight:800;letter-spacing:-.04em;margin-bottom:12px}
+.card p{font-size:.9rem;line-height:1.7;color:#43576b;margin-bottom:10px}
+.note{background:#edf5f8;color:#355d73!important;border-radius:6px;padding:12px 14px;font-size:.82rem!important}
+
+/* 미션 창: 브라우저 창 모양 */
+.win{max-width:720px;padding:0}
+.win-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f1f4f7;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1}
+.dots{display:flex;gap:6px}.dots i{width:11px;height:11px;border-radius:50%}
+.win-url{flex:1;min-width:0;font-family:ui-monospace,Consolas,monospace;font-size:.76rem;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:99px;padding:4px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.x{border:0;background:transparent;font-size:1.4rem;line-height:1;color:var(--muted);border-radius:5px;padding:0 8px}
+.x:hover{background:#e3e9ee;color:var(--ink)}
+.win-body{padding:22px 24px}
+#hintBox{padding-top:0}
+#hintBox:empty{display:none}
+.m-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.m-num{font-size:.72rem;font-weight:800;background:var(--navy);color:#fff;border-radius:4px;padding:2px 8px}
+.m-topic{font-size:.72rem;font-weight:700;background:#e9f3f3;color:#24727a;border-radius:99px;padding:2px 9px}
+.m-user{margin-left:auto;font-size:.74rem;color:var(--muted)}
+.m-title{font-size:1.2rem;font-weight:800;letter-spacing:-.04em;margin:0 0 8px}
+.desc{font-size:.88rem;line-height:1.7;color:#43576b;margin-bottom:14px}
+
+/* 버튼 (이한솔 .btn/.primary와 동일) */
+.btn{min-height:42px;border:1px solid #c9d5df;border-radius:6px;padding:9px 17px;color:var(--ink);background:#fff;font-size:.87rem;font-weight:700;transition:background .15s,box-shadow .15s}
+.btn:hover:not(:disabled){background:#eff5f7;box-shadow:0 2px 8px #233e5010}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.primary:hover:not(:disabled){background:var(--teal-d)}
+.btn.block{width:100%;margin-top:14px}
+.linkbtn{display:block;margin:12px auto 0;border:0;background:transparent;color:var(--muted);font-size:.8rem;text-decoration:underline}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end;margin-top:12px}
+
+/* 코드 / 입력 */
+.code{background:var(--code);color:#cbd5e1;padding:12px 14px;border-radius:8px;white-space:pre-wrap;word-break:break-all;font-family:ui-monospace,Consolas,monospace;font-size:.8rem;line-height:1.6;margin:0 0 12px}
+.code .t{color:#7cc5c8}.code .a{color:#f5c27a}.code .v{color:#a5d6a7}.code .cm{color:#7d8b99}
+.src-label{font-size:.72rem;font-weight:700;color:var(--muted);margin:14px 0 6px}
+.src-label em{font-style:normal;color:var(--red);margin-left:4px}
+.inp{flex:1;min-width:0;height:44px;padding:9px 12px;border:1px solid #bccad7;border-radius:6px;background:#fff;color:var(--ink);box-shadow:inset 0 1px 2px #152f4510}
+.mono{font-family:ui-monospace,Consolas,monospace}
+.msg{font-size:.84rem;margin-top:10px;min-height:1.2em}
+.msg.bad{color:var(--red)}.msg.good{color:var(--teal);font-weight:700}.msg.info{color:#876c32}
+
+/* PC14 신청서 */
+.opts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.opts label{padding:9px 16px;border:1px solid #c9d5df;border-radius:6px;font-weight:700;cursor:pointer;background:#fff}
+.opts input:checked+label{background:#e9f3f3;border-color:var(--teal);color:#24727a}
+
+/* PC17 단서 슬롯 */
+.slots{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.slot{min-width:56px;text-align:center;padding:6px 12px;border:1px dashed #bccad7;border-radius:6px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem;color:var(--muted)}
+.slot.got{border-style:solid;border-color:var(--teal);background:#e9f3f3;color:#24727a;font-weight:700}
+.plus{color:var(--muted)}
+.lockbox{background:#fcf0ef;color:#aa4544;border-radius:6px;padding:14px;font-size:.86rem;line-height:1.7}
+
+/* 학생증 */
+.rules{list-style:none;padding:0;margin:12px 0}
+.rules li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:.84rem;border-bottom:1px solid var(--line)}
+.rules li i{flex-shrink:0;width:18px;height:18px;margin-top:2px;border:1px solid #bccad7;border-radius:50%}
+.rules li.ok{color:#24727a}
+.rules li.ok i{background:var(--teal);border-color:var(--teal)}
+.idcard-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:440px;margin:12px 0;box-shadow:0 5px 18px #21384a0d}
+.idcard-top{background:var(--navy);color:#fff;font-size:.74rem;font-weight:700;letter-spacing:.04em;padding:8px 14px}
+student{display:block;padding:14px;font-size:.88rem}
+student::before{content:"이름  " attr(name) "\A위치  " attr(location) "\A상태  " attr(status);white-space:pre;line-height:1.9}
+
+/* 해결 화면 */
+.done{text-align:center;padding:8px 0}
+.done-ic,.success-icon{margin:0 auto 10px;width:40px;height:40px;border-radius:50%;background:#38897f;color:#fff;display:grid;place-items:center;font-size:22px}
+.done h3{font-size:1.15rem;font-weight:800;margin-bottom:4px}
+.done p{color:var(--muted);font-size:.86rem}
+.reward{display:flex;flex-direction:column;gap:4px;align-items:center;margin-top:16px;padding:16px;background:#eef6f6;border-radius:8px}
+.reward span{font-size:.72rem;color:var(--muted)}
+.reward b{font-family:ui-monospace,Consolas,monospace;font-size:1.6rem;color:#23796e}
+.reward small{font-size:.76rem;color:#43576b}
+
+/* 힌트 */
+.hint{background:#f8f2e6;color:#5d4a22;border-radius:6px;padding:10px 12px;margin:8px 0;font-size:.84rem;line-height:1.6}
+.hint b{color:#876c32;margin-right:6px}
+
+/* 클리어 카드 (이한솔 엔딩 .result 톤) */
+.grade{font-size:clamp(2.4rem,6vw,3.4rem);font-weight:850;letter-spacing:-.05em;line-height:1.1;margin:10px 0 14px}
+.grade .f{color:var(--red)}.grade .arr{color:#9ca9b2;font-weight:400;font-size:.6em;margin:0 10px;vertical-align:middle}.grade .p{color:#23796e}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);background:#f0f3f6;border-radius:6px;padding:12px 0;margin-bottom:12px}
+.stats>div{display:flex;flex-direction:column;gap:2px;font-size:.74rem;color:var(--muted);border-right:1px solid #d4dfe7}
+.stats>div:last-child{border-right:0}
+.stats b{font-size:.98rem;color:var(--ink)}
+.prof{display:flex;flex-direction:column;gap:2px;padding:12px 14px;background:#eef6f6;border-radius:6px}
+.prof small{font-size:.7rem;color:#718592}
+.prof p{font-size:.84rem;line-height:1.6;margin:0;color:var(--ink);cursor:pointer}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);background:var(--navy);color:#fff;padding:10px 18px;border-radius:99px;font-size:.86rem;box-shadow:0 10px 30px #10243640;opacity:0;pointer-events:none;z-index:200;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+@media(max-width:760px){.stage{padding:16px}.card{padding:22px}.win-body{padding:18px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
