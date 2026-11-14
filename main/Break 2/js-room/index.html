@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript 동아리방</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../common/hud.css">
+  <script src="../common/hint.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="game">
+    <section class="room" aria-label="JavaScript 동아리방">
+      <header class="hud">
+        <div class="brand"><span class="js-mark" aria-hidden="true">JS</span><span class="brand-name">JavaScript 동아리방</span></div>
+        <div class="hud-progress">
+          <div class="hud-label"><span>진행률</span><strong id="progressPercent">0%</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="미션 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="progressFill"></span>
+          </div>
+          <small id="progressCount">0 / 4 미션 완료</small>
+        </div>
+        <div class="hud-timer">
+          <span>경과 시간</span><strong id="timerText">00:00</strong>
+          <button id="timerToggle" type="button" aria-label="타이머 일시정지">Ⅱ 정지</button>
+        </div>
+        <div class="hud-hint"><span>힌트 사용</span><strong id="hintTotal">0</strong></div> <!-- [통합] 누적 힌트 -->
+        <button class="checklist-toggle" id="checklistToggle" type="button" aria-expanded="false">
+          체크리스트 <span id="checklistCount">(0/4)</span> <span aria-hidden="true">⌄</span>
+        </button>
+        <!-- 점 세 개 메뉴: 다시하기 / 메인 화면 / 배경음악 설정 -->
+        <div class="menu-wrap">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="메뉴 열기" aria-haspopup="true" aria-expanded="false">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+          <div class="menu-dropdown" id="menuDropdown" role="menu" hidden>
+            <button type="button" role="menuitem" id="menuRestart"><span aria-hidden="true">↻</span>다시하기</button>
+            <button type="button" role="menuitem" id="menuMain"><span aria-hidden="true">⌂</span>메인 화면</button>
+            <button type="button" role="menuitem" id="menuMusic"><span aria-hidden="true">♪</span>배경음악 설정</button>
+          </div>
+        </div>
+      </header>
+
+      <aside class="checklist" id="checklistPanel" hidden>
+        <h2>JavaScript 미션</h2>
+        <ol id="checklistItems"></ol>
+      </aside>
+
+      <!-- 버튼 위치는 style.css의 .computer-hotspot / .board-hotspot / .book-hotspot (사진 기준 %) -->
+      <div class="stage" id="stage">
+        <button class="hotspot computer-hotspot" id="computerHotspot" type="button">
+          <span class="hotspot-icon">⌘</span><span>컴퓨터<small>미션 4개</small></span>
+        </button>
+        <button class="hotspot board-hotspot" id="boardHotspot" type="button">
+          <span class="hotspot-icon">▤</span><span>칠판 <small>힌트</small></span>
+        </button>
+        <button class="hotspot book-hotspot" id="bookHotspot" type="button">
+          <span class="hotspot-icon">▣</span><span>책 <small>힌트</small></span>
+        </button>
+      </div>
+
+      <div class="room-instruction">오브젝트를 클릭해 조사하기</div>
+
+      <!-- 타이머 일시정지 중에 보이는 안내 (정지 중에는 미션·힌트 이용 불가) -->
+      <div class="pause-notice" id="pauseNotice" role="status" hidden>
+        <strong>⏸ 일시정지 중</strong>
+        <p>타이머를 재개하면 미션을 풀고 힌트를 볼 수 있어요.</p>
+        <button class="primary-button" id="pauseResume" type="button">▶ 재개하기</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- 컴퓨터 팝업: 실제 브라우저 새 창이 아니라 게임 안에 표시되는 모달입니다. -->
+  <div class="modal-backdrop" id="computerModal" hidden>
+    <section class="computer-window" role="dialog" aria-modal="true" aria-labelledby="windowTitle">
+      <header class="window-bar">
+        <div class="window-dots"><button class="dot-close" id="closeComputer" type="button" aria-label="닫기"></button><i aria-hidden="true"></i><i aria-hidden="true"></i></div>
+        <div class="fake-address"><span>🔒</span> js-club.local / 동아리 웹페이지</div>
+        <span aria-hidden="true"></span>
+      </header>
+
+      <div class="window-content">
+        <nav class="mission-tabs" id="missionTabs" aria-label="미션 선택"></nav>
+        <div class="task-instruction">
+          <div><span class="eyebrow">현재 미션</span><h2 id="windowTitle">문제 제목을 입력하세요</h2></div>
+          <p id="questionPrompt">여기에 미션 설명을 입력하세요.</p>
+        </div>
+
+        <div class="web-preview">
+          <header class="site-header">
+            <strong>JS CLUB</strong><span>동아리 소개 · 활동 소식 · 자료실</span>
+          </header>
+          <div class="site-content">
+            <section class="site-section">
+              <h3 id="previewSectionTitle">웹페이지 미리보기</h3>
+              <p id="previewDescription">미션을 해결하면 동아리 웹페이지가 복구됩니다.</p>
+            </section>
+            <section class="image-grid" id="imageGrid" aria-label="복구할 사진 영역"></section>
+            <section class="info-grid" id="infoGrid" aria-label="복구할 정보 영역"></section>
+          </div>
+        </div>
+
+        <section class="devtools">
+          <div class="console-pane">
+            <div class="pane-title"><span>콘솔</span><span class="error-count" id="consoleStatus">미션 코드를 입력하세요</span></div>
+            <pre id="consoleOutput">여기에 실행 결과와 오류 메시지가 표시됩니다.</pre>
+          </div>
+          <div class="editor-pane">
+            <div class="pane-title"><span>JavaScript 편집기</span><span id="questionNumber">1 / 4</span></div>
+            <div class="editor-body"><pre class="line-numbers" id="lineNumbers" aria-hidden="true"></pre><textarea id="codeEditor" wrap="off" spellcheck="false" aria-label="JavaScript 코드 편집기" placeholder="// 여기에 수정할 JavaScript 코드를 넣으세요"></textarea></div>
+            <div class="editor-actions">
+              <span>코드를 수정한 뒤 실행을 누르세요.</span>
+              <button id="runCode" type="button">▶ 실행</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <!-- 책/칠판 힌트 팝업 -->
+  <div class="modal-backdrop hint-backdrop" id="hintModal" hidden>
+    <section class="hint-window whiteboard" role="dialog" aria-modal="true" aria-labelledby="hintTitle">
+      <header class="hint-header"><h2 id="hintTitle">힌트</h2><button class="icon-button" id="closeHint" type="button" aria-label="닫기">×</button></header>
+      <div id="hintText" class="board-notes"></div>
+      <button class="primary-button" id="hintDone" type="button">확인</button>
+    </section>
+  </div>
+
+  <!-- 책장 팝업: 여러 책 중 하나를 골라 읽는 힌트 -->
+  <div class="modal-backdrop hint-backdrop" id="bookModal" hidden>
+    <section class="book-window" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+      <header class="hint-header"><h2 id="bookTitle">책장</h2><button class="icon-button" id="closeBook" type="button" aria-label="닫기">×</button></header>
+      <p class="book-guide">책등을 클릭하면 책을 펼쳐 볼 수 있습니다.</p>
+      <div class="bookshelf" id="bookShelf"></div>
+      <article class="book-reader"><h3 id="readerTitle"></h3><p id="readerText"></p></article>
+    </section>
+  </div>
+
+  <!-- 배경음악 설정 팝업: 켜기/끄기 + 볼륨만 조절 (음악 파일은 app.js의 BGM_SRC에서 지정) -->
+  <div class="modal-backdrop music-backdrop" id="musicModal" hidden>
+    <section class="hint-window music-window" role="dialog" aria-modal="true" aria-labelledby="musicTitle">
+      <header class="hint-header"><h2 id="musicTitle">배경음악 설정</h2><button class="icon-button" id="closeMusic" type="button" aria-label="닫기">×</button></header>
+      <div class="music-row">
+        <div class="music-row-text"><strong>배경음악</strong><small id="musicState">켜짐</small></div>
+        <button class="switch" id="musicSwitch" type="button" role="switch" aria-checked="true" aria-label="배경음악 켜기/끄기"><span class="switch-knob"></span></button>
+      </div>
+      <label class="music-volume"><span>볼륨 <b id="musicVolumeText">50%</b></span><input type="range" id="musicVolume" min="0" max="100" value="50"></label>
+      <p class="music-note" id="musicNote" hidden></p>
+    </section>
+  </div>
+
+  <div class="ending-backdrop" id="endingModal" hidden>
+    <section class="ending-window" role="dialog" aria-modal="true" aria-labelledby="endingTitle">
+      <span class="ending-mark">✓</span>
+      <h2 id="endingTitle">미션 완료!</h2>
+      <p>JavaScript 동아리방을 탈출했습니다.</p>
+      <p id="endingTime"></p>
+      <button class="primary-button" id="endingClose" type="button">최종 성적 확인 →</button>
+      <button class="primary-button" id="retryButton" type="button">다시 시작</button>
+    </section>
+  </div>
+
+</body>
+</html>
