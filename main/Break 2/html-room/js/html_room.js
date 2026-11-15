@@ -80,11 +80,13 @@ const state = {
   open: null,
   solving: {}
 };
-/* [디버그] ?debug=pc17 → pc17 직전까지 해결 처리 / ?debug=all → 전부 해결 (배포 전 삭제) */
+const DEBUG_NEXT = new URLSearchParams(location.search).get('debug') === 'next';
+/* [디버그] ?debug=pc17 → pc17 직전까지 해결 / ?debug=all → 전부 해결 / ?debug=clear → 전부 해결 + 클리어 화면 / ?debug=next → 클리어 처리 후 CSS 방으로 바로 이동 (배포 전 삭제) */
 if (qs.has('debug')) {
   const target = qs.get('debug'), idx = ORDER.indexOf(target);
-  ORDER.forEach((id, i) => { if (target === 'all' || i < idx) state.solved[id] = true; });
+  ORDER.forEach((id, i) => { if (target === 'all' || target === 'clear' || target === 'next' || i < idx) state.solved[id] = true; });
   state.entered = true;
+  if (target === 'clear' || target === 'next') state.cleared = true;   // clear: 클리어 화면 표시 / next: 클리어 처리 후 다음 방으로 바로 이동
   history.replaceState(null, '', location.pathname);
 }
 function save() {
@@ -524,6 +526,7 @@ document.addEventListener('keydown', e => {
 $('#introNick').textContent = NICK;
 renderHUD(); renderPCs();
 if (state.cleared) clearStage(true);
+if (DEBUG_NEXT) location.href = CONFIG.nextStageUrl;   // [디버그]
 else if (!state.entered) show('#introOv');
 else state.paused = false;
 
