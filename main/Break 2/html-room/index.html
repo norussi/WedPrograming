@@ -4,96 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HTML 실습실 · Break;</title>
-<style>
-/* [통합] 임서은(JS 동아리방)·이한솔(학사 포털)과 같은 디자인 톤: 네이비 상단 바 · 흰 카드 · 틸 버튼 */
-:root{--navy:#2c3b4c;--ink:#243244;--text:#3b4659;--muted:#6b7686;--soft:#f2f4f7;--card:#fff;--line:#e0e6eb;--teal:#407c7f;--teal-dark:#34686b;--teal-soft:#e6f0f0;--teal-light:#7cc4c0;--danger:#9e4b47;--green:#3f8a68;--gold:#f5c64e;
-  font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:#1c2530;color:var(--ink)}
-button{font:inherit;color:inherit;cursor:pointer}
-.hidden{display:none !important}
-/* [통합] 상단 바 스타일은 ../common/hud.css (세 방 공용) */
-.hud{position:sticky}
-.check-wrap{position:relative}
-.check-panel{z-index:70;position:absolute;top:calc(100% + 12px);right:0;width:min(330px,90vw);padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);box-shadow:0 14px 40px #1f2a3b4d;z-index:70}
-.cp-title{margin:0 0 14px;font-size:17px;font-weight:700}
-.check-item{display:flex;gap:10px;padding:10px 12px;margin-bottom:8px;border-radius:10px;background:var(--soft);font-size:14px}
-.check-item .box{flex:0 0 22px;height:22px;display:grid;place-items:center;border:2px solid #c5ced8;border-radius:50%;font-size:12px}
-.check-item.done .box{border-color:var(--teal);background:var(--teal);color:#fff}
-.check-item.done .t{text-decoration:line-through;color:var(--muted)}
-.check-item .c{margin-top:4px;font-size:12px;color:var(--muted)}
-.clue-chip{display:inline-block;padding:1px 8px;border-radius:99px;background:var(--teal-soft);color:var(--teal-dark);font-weight:700}
-/* 방 장면 (사진 없음 – images.jfif 넣으면 그대로 표시) */
-.stage{padding:16px 0}
-.scene{position:relative;width:min(100%,calc((100vh - 110px) * 1.3333));aspect-ratio:516/387;margin:0 auto;border-radius:12px;overflow:hidden;background:url("images.jfif") center/cover no-repeat,radial-gradient(ellipse at 50% 30%,#56677a 0%,#33404e 50%,#1f2731 100%)}
-.pc{position:absolute;padding:0;border:2px solid #ffffffcc;border-radius:12px;background:#ffffff26;box-shadow:0 8px 22px #0004;cursor:pointer;transition:.2s}
-.pc:hover,.pc:focus-visible{background:#ffffff47;transform:translateY(-2px);outline:none}
-.pc.solved{border-color:var(--teal-light);background:#407c7f55}
-.pc.locked{border-color:#94a3b8;background:#0006}
-.tag{position:absolute;left:8px;bottom:calc(100% + 6px);padding:3px 10px;border-radius:99px;background:#ffffffeb;color:var(--ink);font-size:12px;font-weight:700;white-space:nowrap}
-/* 팝업 */
-.overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:#1b2430b3;backdrop-filter:blur(3px)}
-.card{width:min(520px,100%);max-height:90vh;overflow:auto;padding:28px;border-radius:18px;background:#fff;color:var(--ink);box-shadow:0 24px 60px #0006}
-.card h2{margin:6px 0 12px;font-size:22px}.card p{color:var(--text);line-height:1.65}
-.eyebrow{display:inline-block;color:var(--teal);font-size:12px;font-weight:800;letter-spacing:.06em}
-.note{padding:12px 14px;border-radius:10px;background:var(--soft);font-size:14px}
-.muted{color:var(--muted)}
-.win{width:min(760px,100%);max-height:90vh;overflow:auto;border-radius:16px;background:#fff;color:var(--ink);box-shadow:0 24px 60px #0006}
-.win-bar{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--navy);color:#fff}
-.dots{display:flex;gap:6px}.dots i{width:12px;height:12px;border-radius:50%}
-.win-url{flex:1;padding:6px 12px;border-radius:8px;background:#ffffff1a;color:#dbe3ea;font-size:13px}
-.x{border:0;background:none;color:#fff;font-size:22px;line-height:1}
-.win-body{padding:20px 24px;line-height:1.6}
-.win-body:empty{display:none}
-#hintBox{border-top:1px solid var(--line);background:#fbfcfd}
-.m-head{display:flex;gap:10px;align-items:center;margin-bottom:6px}
-.m-num{padding:3px 10px;border-radius:99px;background:var(--teal);color:#fff;font-size:12px;font-weight:800}
-.m-topic,.m-user{color:var(--muted);font-size:13px}
-.m-title{margin:4px 0 10px;font-size:20px;font-weight:800}
-.desc{color:var(--text)}
-.btn{padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-weight:700}
-.btn:hover{background:var(--soft)}
-.btn.primary{border-color:var(--teal);background:var(--teal);color:#fff}
-.btn.primary:hover{background:var(--teal-dark)}
-.btn.block{width:100%;margin-top:14px}
-.linkbtn{display:block;margin:12px auto 0;border:0;background:none;color:var(--muted);text-decoration:underline}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}.row.end{justify-content:flex-end}
-.code{margin:8px 0;padding:12px 14px;border-radius:10px;background:#1e2733;color:#d9e2ec;font:13px/1.6 Consolas,monospace;white-space:pre-wrap;word-break:break-all}
-.code .t{color:#7cc4c0}.code .a{color:#f5c64e}.code .v{color:#f0a58f}
-.src-label{margin-top:12px;color:var(--muted);font-size:12px;font-weight:700}
-code{padding:1px 6px;border-radius:5px;background:var(--teal-soft);color:var(--teal-dark);font-family:Consolas,monospace}
-.inp{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px}
-.inp:focus{outline:2px solid var(--teal-light);border-color:var(--teal)}
-.mono{font-family:Consolas,monospace}
-.msg{min-height:1.4em;margin:10px 0 0;font-weight:600}
-.msg.bad{color:var(--danger)}.msg.good{color:var(--green)}.msg.info{color:#a8741a}
-.opts{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-.opts label{padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:var(--soft);cursor:pointer}
-.slots{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}
-.slot{padding:6px 12px;border:1px dashed #b7c2cd;border-radius:8px;color:var(--muted)}
-.slot.got{border:1px solid var(--teal);background:var(--teal-soft);color:var(--teal-dark);font-weight:700}
-.plus{color:var(--muted)}
-.lockbox{padding:14px;border-radius:10px;background:#faf0ef;color:var(--danger)}
-.rules{padding-left:20px}.rules li.ok{color:var(--green)}
-.reward{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--teal-soft);color:var(--teal-dark)}
-.idcard-wrap{max-width:440px;margin:12px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
-.idcard-top{margin-bottom:8px;color:var(--teal-dark);font-size:12px;font-weight:800}
-student{display:block}
-student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상태 " attr(status)}
-.hint{margin:6px 0;padding:10px 12px;border-left:4px solid var(--gold);border-radius:8px;background:#fff8e6;color:var(--ink)}
-.grade{display:flex;justify-content:center;align-items:center;gap:14px;margin:16px 0;font-size:30px;font-weight:900}
-.grade .f{color:#e8734a}.grade .arr{color:var(--muted)}.grade .p{color:var(--teal)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.stats div{padding:10px;border-radius:10px;background:var(--soft);color:var(--muted);font-size:12px}
-.stats b{display:block;margin-top:4px;color:var(--ink);font-size:18px}
-.prof{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--soft)}.prof small{color:var(--muted)}.prof p{margin:4px 0 0}
-.done{color:var(--green)}
-.toast{position:fixed;left:50%;bottom:24px;z-index:200;transform:translateX(-50%);padding:10px 18px;border-radius:99px;background:var(--navy);color:#fff;box-shadow:0 8px 24px #0005;opacity:0;pointer-events:none;transition:opacity .2s}
-.toast.show{opacity:1}
-.shake{animation:shake .35s}
-@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-</style>
-<link rel="stylesheet" href="../common/hud.css"> <!-- [통합] -->
+<link rel="stylesheet" href="../common/hud.css"> <!-- [통합] 세 방 공용 상단 바 -->
+<link rel="stylesheet" href="css/html_room.css">
 </head>
 <body>
 
@@ -153,10 +65,13 @@ student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상
 
 
 <!-- 일시정지 -->
-<div class="pause-notice" id="pauseNotice" role="status" hidden> <!-- [통합] JS 방과 같은 일시정지 안내 -->
-  <strong>⏸ 일시정지 중</strong>
-  <p>타이머를 재개하면 미션을 풀고 힌트를 볼 수 있어요.</p>
-  <button class="primary-button" id="pauseResume" type="button">▶ 재개하기</button>
+<div class="overlay hidden" id="pauseOv">
+  <div class="card" style="text-align:center">
+    <div class="eyebrow">PAUSED</div>
+    <h2>일시정지</h2>
+    <p class="muted">타이머가 멈췄어요. 진행 상황은 자동 저장됩니다.</p>
+    <button class="btn primary block" id="resumeBtn">계속하기</button>
+  </div>
 </div>
 
 <!-- 스테이지 클리어 -->
@@ -191,6 +106,7 @@ student::before{content:"이름 " attr(name) " / 위치 " attr(location) " / 상
     </section>
   </div>
 
+HEAD
 <script>
 (() => {
 'use strict';
@@ -219,7 +135,7 @@ const CONFIG = {
 };
 const K = CONFIG.keys;
 
-/* ════════════ 유틸 ════════════ */
+/* 유틸  */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -248,7 +164,7 @@ function toast(msg) {
   clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
-/* ════════════ 상태 ════════════ */
+/* 상태*/
 const qs = new URLSearchParams(location.search);
 if (qs.has('reset')) {
   [K.html, K.elapsed, K.hints, K.stage].forEach(LS.del);
@@ -278,7 +194,7 @@ function save() {
 const solvedCount = () => ORDER.filter(id => state.solved[id]).length;
 const firstThree = () => state.solved.pc03 && state.solved.pc08 && state.solved.pc14;
 
-/* ════════════ 미션 정의 ════════════ */
+/* 미션 정의 */
 const MISSIONS = {
   pc03: {
     num: '03', topic: 'console', url: 'lab-pc-03.local/admin-login.html',
@@ -337,7 +253,7 @@ const MISSION_AT = { 1: 'pc03', 2: 'pc08', 3: 'pc14', 4: 'pc17' };
   });
 })();
 
-/* ════════════ 렌더링 ════════════ */
+/*  렌더링 */
 function renderHUD() {
   const n = solvedCount(), pct = Math.round(n / 4 * 100);
   $('#pct').textContent = pct + '%';
@@ -368,7 +284,7 @@ function renderPCs() {
   });
 }
 
-/* ════════════ 타이머 ════════════ */
+/* 타이머 */
 let last = performance.now(), saveAcc = 0;
 setInterval(() => {
   const now = performance.now(), dt = now - last; last = now;
@@ -380,7 +296,7 @@ setInterval(() => {
 }, 250);
 window.addEventListener('beforeunload', save);
 
-/* ════════════ 사운드 ════════════ */
+/* 사운드 */
 let ac = null;
 function audio() {
   if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch { return null; } }
@@ -405,7 +321,7 @@ function sfx(kind) {
 }
 // [통합] BGM 켜기/끄기 → ../common/bgm.js 배경음악 설정 팝업으로 대체
 
-/* ════════════ 미션 창 ════════════ */
+/*  미션 창 */
 let cleanup = [];
 const body = $('#winBody');
 function head(m) {
@@ -624,7 +540,7 @@ function renderDone(id, fresh) {
   </div>`;
 }
 
-/* ════════════ 클리어 ════════════ */
+/*  클리어  */
 const PROF_MSG = `${NICK} 학생, HTML 실습 기록 확인했습니다. 콘솔 로그, 요소 수정, 입력 타입 변경까지 개발자 도구를 잘 다뤘네요. 다음은 CSS 디자인실이에요. 화이팅 ^^`;
 function clearStage(instant) {
   state.cleared = true;
@@ -649,7 +565,7 @@ function typeWrite(el, text, instant) {
   el.onclick = () => { clearInterval(t); el.textContent = text; };
 }
 
-/* ════════════ 미션별 힌트 ════════════ */
+/* 미션별 힌트  */
 function renderHints() {
   const box = $('#hintBox'), id = state.open;
   if (!id || state.solved[id] || (id === 'pc17' && !firstThree())) { box.innerHTML = ''; return; }
@@ -666,7 +582,7 @@ function renderHints() {
   });
 }
 
-/* ════════════ 이벤트 ════════════ */
+/*  이벤트  */
 scene.addEventListener('click', e => {
   const pc = e.target.closest('.pc'); if (!pc) return;
   openMission(pc.dataset.mission);
@@ -710,7 +626,7 @@ document.addEventListener('keydown', e => {
   else hide('#checkPanel');
 });
 
-/* ════════════ 시작 ════════════ */
+/* 시작  */
 $('#introNick').textContent = NICK;
 renderHUD(); renderPCs();
 if (state.cleared) clearStage(true);
@@ -722,6 +638,10 @@ window.HTMLRoom = { state, config: CONFIG, reset: () => { location.search = '?re
 })();
 </script>
 <script>window.BREAK_BGM_SRC = "";</script> <!-- [통합] 배경음악 파일 경로 -->
+
+<script>window.BREAK_BGM_SRC = "";</script> <!-- [통합] 배경음악 파일 경로 (지금은 없음) -->
+<script src="js/html_room.js"></script>
+b3626e259c083595093b31dd2c49ca75ceb23520
 <script src="../common/bgm.js"></script>
 </body>
 </html>
