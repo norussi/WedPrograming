@@ -1,12 +1,7 @@
 <!doctype html>
 <!--
 팀 통합 안내
-1. begin(): 시연 ID 생성 대신 POST /plays에서 발급한 playId를 사용.
-2. enterPractice(): POST /plays/:id/start 성공 후 같은 사이트·탭에서 HTML 방으로 이동.
-3. 엔딩 진입: index.html?scene=ending을 열고, sessionStorage의 playId로 서버 결과 조회.
-   서버가 확인한 {cleared:true, elapsedSeconds:754, hintCount:2}를 BreakGame.complete()에 전달.
-4. showRank(): 시연용 records()를 GET /rankings 응답으로 교체하고 안내 문구 변경.
-   실기록의 완료 판정과 저장은 서버에서 처리. demo 버튼은 통합 시 제거.
+게임 기록 API는 같은 Express 서버의 /api 경로를 사용합니다.
 -->
 <html lang="ko">
 <head>
@@ -60,7 +55,7 @@
 </section>
 </main>
 <dialog id="help-dialog" aria-labelledby="help-title"><h2 id="help-title">게임 방법</h2><ol class="muted"><li>닉네임을 입력하고 교수님의 대화를 확인합니다.</li><li>HTML → CSS → JavaScript 순서로 실습을 통과합니다.</li><li>막히면 조교 SOS에서 힌트를 확인합니다.</li><li>세 실습을 통과하면 엔딩에서 기록을 확인합니다.</li></ol><form method="dialog" class="actions end"><button class="btn">닫기</button></form></dialog>
-<dialog id="rank-dialog" aria-labelledby="rank-title"><h2 id="rank-title">랭킹</h2><p class="muted">현재 브라우저의 시연용 기록입니다. 시간이 짧은 순으로, 시간이 같으면 힌트를 적게 쓴 순으로 표시합니다.</p>
+<dialog id="rank-dialog" aria-labelledby="rank-title"><h2 id="rank-title">랭킹</h2><p class="muted">모든 플레이어의 기록입니다. 시간이 짧은 순으로, 시간이 같으면 힌트를 적게 쓴 순으로 표시합니다.</p>
   <p id="empty-rank" class="muted">아직 등록된 기록이 없습니다.</p><div class="table-wrap" id="rank-wrap" hidden><table><thead><tr><th scope="col">순위</th><th scope="col">닉네임</th><th scope="col">시간</th><th scope="col">힌트</th></tr></thead><tbody id="rank-body"></tbody></table></div>
   <form method="dialog" class="actions end" style="margin-top:14px"><button class="btn">닫기</button></form>
 </dialog>

@@ -660,6 +660,8 @@ function renderHints() {
   const btn = $('#hintBtn', box);
   if (btn) btn.addEventListener('click', () => {
     state.hintLevel[id]++; state.hints++;
+    const playId = sessionStorage.getItem('playId');
+    if (playId) fetch(`/api/plays/${encodeURIComponent(playId)}/hints`, { method: 'POST' }).catch(() => {});
     save(); renderHUD(); renderHints(); sfx('click');
   });
 }

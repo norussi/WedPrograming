@@ -43,10 +43,16 @@ function show(name){
   window.scrollTo(0,0);
 }
 function savePlay(){write("session","break.play",JSON.stringify(play));}
-function begin(nickname){
-  // 백엔드 연결 시 POST /plays 응답의 playId를 이곳에서 사용.
-  const playId = globalThis.crypto?.randomUUID?.() ?? "demo-"+Date.now()+"-"+Math.random().toString(36).slice(2);
-  play = {playId,nickname,startedAt:null,result:null};
+async function api(url, options={}) {
+  const response = await fetch(url, { headers: { "Content-Type": "application/json" }, ...options });
+  const body = await response.json().catch(()=>({}));
+  if (!response.ok) throw new Error(body.error || "서버 요청에 실패했습니다.");
+  return body;
+}
+async function begin(nickname){
+  const created = await api("/api/plays", { method:"POST", body:JSON.stringify({nickname}) });
+  const playId = created.playId;
+  play = {playId,nickname:created.nickname,startedAt:null,result:null};
   write("session","playId",playId);
   write("local","break.nickname",nickname);
   write("local","break_nickname",nickname); // [통합] 실습실 3곳과 공유하는 닉네임 키
@@ -87,8 +93,10 @@ function renderDialogue(){
   $("prev").disabled=step===0;
   $("next").textContent=step===lines.length-1?"실습 안내 확인 →":"다음 →";
 }
-function enterPractice(){
+async function enterPractice(){
   if(!play)return;
+  try { await api(`/api/plays/${encodeURIComponent(play.playId)}/start`, {method:"POST"}); }
+  catch(error) { alert(error.message); return; }
   play.startedAt ??= Date.now();
   savePlay();
   // [통합] 새 게임: 공유 기록 초기화 후 HTML 실습실로 이동
@@ -133,9 +141,10 @@ function renderEnding(){
   $("result-note").textContent=result.demo?"시연용 예시 기록입니다.":"";
   show("ending");
 }
-function showRank(){
-  // 공용 랭킹 연결 시 records() 대신 서버 GET /rankings 결과를 사용.
-  const sorted=records().slice().sort((a,b)=>a.elapsedSeconds-b.elapsedSeconds || a.hintCount-b.hintCount);
+async function showRank(){
+  let sorted;
+  try { sorted=await api("/api/rankings"); }
+  catch(error) { alert(error.message); return; }
   const body=$("rank-body");
   body.replaceChildren();
   let rank=0;
@@ -166,27 +175,26 @@ $("start-form").addEventListener("submit",(e)=>{
   $("nickname-error").hidden=!message;
   if(message){input.setAttribute("aria-invalid","true");input.focus();return;}
   input.removeAttribute("aria-invalid");
-  begin(nickname);
+  begin(nickname).catch(error=>alert(error.message));
 });
 $("prev").addEventListener("click",()=>{if(step>0){step--;renderDialogue();}});
 $("next").addEventListener("click",()=>{if(finishTyping())return;if(step===lines.length-1)show("guide");else{step++;renderDialogue();}});
 $("messages").addEventListener("click",finishTyping);
 $("back-chat").addEventListener("click",()=>{step=0;renderDialogue();show("prologue");});
-$("enter").addEventListener("click",enterPractice);
+$("enter").addEventListener("click",()=>enterPractice());
 $("demo-clear").addEventListener("click",()=>complete({cleared:true,elapsedSeconds:754,hintCount:2,demo:true}));
-$("retry").addEventListener("click",()=>{if(play)begin(play.nickname);});
+$("retry").addEventListener("click",()=>{if(play)begin(play.nickname).catch(error=>alert(error.message));});
 document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.open).showModal()));
-document.querySelectorAll("[data-rank]").forEach(b=>b.addEventListener("click",showRank));
+document.querySelectorAll("[data-rank]").forEach(b=>b.addEventListener("click",()=>showRank()));
 document.querySelectorAll("[data-home]").forEach(b=>b.addEventListener("click",()=>show("home")));
 window.BreakGame=Object.freeze({getPlayId:()=>play?.playId??null,complete});
 const restore = new URLSearchParams(location.search).get("scene")==="ending"
   ? "ending" : read("session","break.scene");
 if(play?.startedAt!=null && restore==="ending"){
-  // [통합] JS 동아리방에서 넘어오면 공유 키의 누적 시간·힌트로 결과 확정
   if(!play.result){
-    const ms=Number(read("local","break_elapsed_ms"))||0;
-    const hints=Number(read("local","break_hint_count"))||0;
-    complete({cleared:true,elapsedSeconds:Math.round(ms/1000),hintCount:Math.round(hints)});
+    api(`/api/plays/${encodeURIComponent(play.playId)}/complete`, {method:"POST"})
+      .then(result=>{ play.result={...result,demo:false}; savePlay(); renderEnding(); })
+      .catch(error=>{ alert(error.message); show("guide"); });
   }else renderEnding();
   history.replaceState(null,"",location.pathname);
 }else if(play && ["prologue","guide","demo"].includes(restore)){
