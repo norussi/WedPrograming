@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML 실습실 · Break;</title>
+<link rel="stylesheet" href="../common/hud.css"> <!-- [통합] 세 방 공용 상단 바 -->
+<link rel="stylesheet" href="css/html_room.css">
+</head>
+<body>
+
+<header class="hud"> <!-- [통합] 세 방 공용 상단 바 -->
+  <div class="brand"><span class="room-mark html">HTML</span><span class="brand-name">HTML 실습실</span></div>
+  <div class="hud-progress">
+    <div class="hud-label"><span>진행률</span><strong id="pct">0%</strong></div>
+    <div class="progress-track"><span id="barFill"></span></div>
+    <small><span id="checkN2">0</span> / 4 미션 완료</small>
+  </div>
+  <div class="hud-timer">
+    <span>경과 시간</span><strong id="timer">00:00</strong>
+    <button id="pauseBtn" type="button">Ⅱ 정지</button>
+  </div>
+  <div class="hud-hint"><span>힌트 사용</span><strong id="hintTotal">0</strong></div>
+  <div class="checklist-wrap check-wrap">
+    <button class="checklist-toggle" id="checkBtn" type="button" aria-expanded="false">체크리스트 (<span id="checkN">0</span>/4) ⌄</button>
+    <div id="checkPanel" class="check-panel hidden"></div>
+  </div>
+  <div class="menu-wrap">
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="메뉴 열기" aria-expanded="false"><span class="dots"><i></i><i></i><i></i></span></button>
+    <div class="menu-dropdown hidden" id="menuDropdown" role="menu">
+      <button type="button" id="retryBtn"><span>↻</span>다시하기</button>
+      <button type="button" id="mainBtn"><span>⌂</span>메인 화면</button>
+      <button type="button" id="menuMusic"><span>♪</span>배경음악 설정</button>
+    </div>
+  </div>
+</header>
+
+<main class="stage">
+  <div class="scene" id="scene"></div>
+</main>
+
+<!-- 입장 안내 -->
+<div class="overlay hidden" id="introOv">
+  <div class="card">
+    <div class="eyebrow">STAGE 1 · HTML 실습실</div>
+    <h2>과제가 각 PC에 흩어져 있다</h2>
+    <p>접속자 <b id="introNick"></b>님, HTML 실습 과제가 이 방의 컴퓨터 네 대에 남아 있어요. <b>화면이 켜진 PC</b>를 클릭해 미션을 해결하고, 다음 실습실로 이동하세요.</p>
+    <p class="note">이 방의 미션은 브라우저 <b>개발자 도구(F12)</b>를 직접 사용합니다. 크롬·엣지 같은 PC 브라우저에서 플레이하세요. 막히면 각 미션 창의 <b>힌트</b> 버튼을 누르세요.</p>
+    <button class="btn primary block" id="enterBtn">실습실 입장 →</button>
+  </div>
+</div>
+
+<!-- 미션 창 -->
+<div class="overlay hidden" id="missionOv">
+  <div class="win" role="dialog" aria-modal="true" aria-labelledby="winUrl">
+    <div class="win-bar">
+      <div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <div class="win-url" id="winUrl"></div>
+      <button class="x" id="winClose" aria-label="닫기">×</button>
+    </div>
+    <div class="win-body" id="winBody"></div>
+    <div class="win-body" id="hintBox"></div>
+  </div>
+</div>
+
+
+<!-- 일시정지 -->
+<div class="overlay hidden" id="pauseOv">
+  <div class="card" style="text-align:center">
+    <div class="eyebrow">PAUSED</div>
+    <h2>일시정지</h2>
+    <p class="muted">타이머가 멈췄어요. 진행 상황은 자동 저장됩니다.</p>
+    <button class="btn primary block" id="resumeBtn">계속하기</button>
+  </div>
+</div>
+
+<!-- 스테이지 클리어 -->
+<div class="overlay hidden" id="clearOv">
+  <div class="card" style="text-align:center">
+    <div class="eyebrow">HTML 실습 통과</div>
+    <h2>HTML 실습실 클리어!</h2>
+    <div class="grade"><span class="f">HTML</span><span class="arr">→</span><span class="p">PASS</span></div>
+    <div class="stats">
+      <div>미션<b>4 / 4</b></div>
+      <div>누적 시간<b id="clearTime">00:00</b></div>
+      <div>힌트 사용<b id="clearHints">0회</b></div>
+    </div>
+    <div class="prof" style="text-align:left"><small>웹프로그래밍 담당 교수</small><p id="profMsg"></p></div>
+    <button class="btn primary block" id="nextBtn">CSS 디자인실로 이동 →</button>
+    <button class="linkbtn" id="replayBtn">이 방 처음부터 다시 하기</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+  <!-- 배경음악 설정 팝업: 켜기/끄기 + 볼륨만 조절 (음악 파일은 app.js의 BGM_SRC에서 지정) -->
+  <div class="modal-backdrop music-backdrop" id="musicModal" hidden>
+    <section class="hint-window music-window" role="dialog" aria-modal="true" aria-labelledby="musicTitle">
+      <header class="hint-header"><h2 id="musicTitle">배경음악 설정</h2><button class="icon-button" id="closeMusic" type="button" aria-label="닫기">×</button></header>
+      <div class="music-row">
+        <div class="music-row-text"><strong>배경음악</strong><small id="musicState">켜짐</small></div>
+        <button class="switch" id="musicSwitch" type="button" role="switch" aria-checked="true" aria-label="배경음악 켜기/끄기"><span class="switch-knob"></span></button>
+      </div>
+      <label class="music-volume"><span>볼륨 <b id="musicVolumeText">50%</b></span><input type="range" id="musicVolume" min="0" max="100" value="50"></label>
+      <p class="music-note" id="musicNote" hidden></p>
+    </section>
+  </div>
+
+HEAD
+<script>window.BREAK_BGM_SRC = "";</script> <!-- [통합] 배경음악 파일 경로 -->
+
+<script>window.BREAK_BGM_SRC = "";</script> <!-- [통합] 배경음악 파일 경로 (지금은 없음) -->
+<script src="../common/api.js"></script>
+<script src="js/html_room.js"></script>
+b3626e259c083595093b31dd2c49ca75ceb23520
+<script src="../common/bgm.js"></script>
+</body>
+</html>

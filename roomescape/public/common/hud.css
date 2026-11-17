@@ -1,0 +1,77 @@
+:root{--navy:#2c3b4c;--ink:#243244;--text:#3b4659;--muted:#6b7686;--soft:#f2f4f7;--card:#fff;--line:#e0e6eb;--teal:#407c7f;--teal-dark:#34686b;--teal-soft:#e6f0f0;--teal-light:#7cc4c0;--danger:#9e4b47;--danger-bg:#faf0ef}
+/* [통합] 세 실습실 공용 상단 바 + 배경음악 팝업 (기준: js-room/style.css 37~77줄, 203~218줄) */
+[hidden]{display:none !important}
+/* ---------- 상단 바 ---------- */
+.hud {
+  position: absolute; z-index: 5; left: 0; right: 0; top: 0;
+  min-height: 72px; display: grid; grid-template-columns: auto minmax(200px, 1.6fr) auto auto auto auto; align-items: center;
+  gap: 28px; padding: 10px 2.4%; background: var(--navy); border-bottom: 1px solid #ffffff14; box-shadow: 0 6px 20px #0003;
+}
+.brand { display: flex; align-items: center; gap: 12px; white-space: nowrap; color: #fff; }
+.js-mark { display: grid; place-items: center; flex: 0 0 auto; width: 42px; height: 42px; border-radius: 10px; background: #f2ce40; color: #1d251d; font-size: 19px; font-weight: 900; }
+.brand-name { font-size: clamp(20px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.02em; }
+.hud-progress { min-width: 0; }
+.hud-label { display: flex; gap: 10px; align-items: baseline; font-size: 13px; color: #c3cdd8; }
+.hud-label strong { color: var(--teal-light); font-size: 18px; }
+.progress-track { height: 8px; margin: 6px 0 4px; background: #ffffff26; border-radius: 8px; overflow: hidden; }
+.progress-track span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #5aa7a3, #8ed6c4); border-radius: inherit; transition: width .3s ease; }
+.hud-progress small { color: #a9b6c3; font-size: 11px; }
+.hud-timer { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; column-gap: 12px; justify-content: center; }
+.hud-timer > span { color: #c3cdd8; font-size: 13px; }
+.hud-timer strong { color: #fff; font-size: 22px; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.hud-timer button { grid-column: 2; padding: 1px 0; border: 0; background: none; color: #c3cdd8; font-size: 12px; text-align: left; }
+.hud-timer button:hover { color: #fff; }
+.checklist-toggle, .menu-toggle { border: 1px solid #ffffff3d; border-radius: 10px; background: #ffffff12; color: #fff; }
+.checklist-toggle { justify-self: end; padding: 10px 14px; white-space: nowrap; font-size: 14px; }
+.checklist-toggle:hover, .menu-toggle:hover, .menu-toggle:focus-visible, .menu-toggle[aria-expanded="true"] { background: #ffffff26; border-color: #ffffff66; outline: none; }
+
+/* 체크리스트 패널 */
+.checklist { position: absolute; z-index: 7; top: 84px; right: 2.4%; width: min(330px, 90%); padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: 0 14px 40px #1f2a3b4d; }
+.checklist h2 { margin: 0 0 14px; font-size: 17px; color: var(--ink); }
+.checklist ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.checklist li { display: flex; gap: 10px; color: var(--text); font-size: 13px; }
+.checklist li::before { content: "□"; color: #9aa6b4; }
+.checklist li.done::before { content: "✓"; color: var(--teal); font-weight: 800; }
+
+/* ⋮ 메뉴 */
+.menu-wrap { position: relative; justify-self: end; }
+.menu-toggle { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; }
+.menu-toggle .dots { display: grid; gap: 4px; }
+.menu-toggle .dots i { width: 4px; height: 4px; border-radius: 50%; background: #fff; }
+.menu-dropdown { position: absolute; top: calc(100% + 12px); right: 0; z-index: 8; display: grid; gap: 2px; min-width: 190px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); box-shadow: 0 14px 40px #1f2a3b4d; }
+.menu-dropdown button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 0; border-radius: 8px; background: none; color: var(--ink); font-size: 14px; font-weight: 500; text-align: left; white-space: nowrap; }
+.menu-dropdown button span { width: 20px; text-align: center; color: var(--teal); }
+.menu-dropdown button:hover, .menu-dropdown button:focus-visible { background: var(--soft); outline: none; }
+.room-mark{display:grid;place-items:center;min-width:42px;height:42px;padding:0 8px;border-radius:10px;font-size:16px;font-weight:900;color:#fff}
+.room-mark.html{background:#e8734a}
+.room-mark.css{background:#3e8ed0}
+.hud-hint{display:grid;justify-items:center;color:#c3cdd8;font-size:13px;white-space:nowrap}
+.hud-hint strong{color:#f5c64e;font-size:22px;font-variant-numeric:tabular-nums}
+.hud .checklist-wrap{position:relative;justify-self:end}
+/* 일시정지 안내 — js-room/style.css 99~101줄과 동일 */
+.pause-notice{position:fixed;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%);width:min(340px,88vw);padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:0 18px 50px #1f2a3b66;text-align:center}
+.pause-notice strong{color:var(--ink);font-size:18px}
+.pause-notice p{margin:8px 0 16px;color:var(--muted);font-size:14px;line-height:1.6}
+.pause-notice .primary-button{padding:11px 20px;border:0;border-radius:10px;background:var(--teal);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.pause-notice .primary-button:hover{background:var(--teal-dark)}
+.music-backdrop{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#243244a6;backdrop-filter:blur(6px)}
+.music-backdrop .hint-window{padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);box-shadow:0 24px 70px #1f2a3b80}
+.music-backdrop .hint-header{display:flex;align-items:center;justify-content:space-between}
+.music-backdrop .hint-header h2{margin:0;font-size:19px}
+.music-backdrop .icon-button{border:0;background:none;color:#8793a3;font-size:28px;cursor:pointer}
+/* ---------- 배경음악 설정 팝업 ---------- */
+.modal-backdrop.music-backdrop { z-index: 40; }
+.music-window { width: min(420px, 92vw); }
+.music-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 18px 0 4px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); }
+.music-row-text { display: grid; gap: 2px; }
+.music-row-text strong { color: var(--ink); font-size: 15px; }
+.music-row-text small { color: var(--muted); font-size: 12px; }
+.switch { position: relative; flex: 0 0 auto; width: 48px; height: 28px; padding: 0; border: 0; border-radius: 999px; background: #c5ccd6; transition: background .18s; }
+.switch .switch-knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px #0003; transition: transform .18s; }
+.switch.on { background: var(--teal); }
+.switch.on .switch-knob { transform: translateX(20px); }
+.switch:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+.music-volume { display: grid; gap: 8px; margin-top: 18px; color: var(--text); font-size: 14px; }
+.music-volume b { color: var(--teal); }
+.music-volume input { width: 100%; accent-color: var(--teal); }
+.music-backdrop p.music-note { min-height: 0; margin: 16px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--danger-bg); color: var(--danger); font-size: 13px; }
