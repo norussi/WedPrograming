@@ -4,10 +4,14 @@
   "private": true,
   "description": "Break; F학점 탈출 — 서버 검증·기록 유지 기능을 갖춘 웹 방탈출 게임",
   "type": "commonjs",
-  "engines": {"node": ">=18"},
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js",
     "test": "node --test test/*.test.js"
   },
-  "dependencies": {"express": "^5.1.0"}
+  "dependencies": {
+    "express": "5.1.0"
+  }
 }
